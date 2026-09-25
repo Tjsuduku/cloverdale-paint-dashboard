@@ -1,0 +1,75 @@
+name: Collect competitor data
+
+on:
+  schedule:
+    # Every day at 13:23 UTC (6:23 am Vancouver in summer, 5:23 am in winter)
+    - cron: "23 13 * * *"
+  workflow_dispatch:
+    inputs:
+      email:
+        description: "Also send the weekly summary email now"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Collect public numbers
+        run: node collector/collect.mjs
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          YT_API_KEY: ${{ secrets.YT_API_KEY }}
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+          FB_LANDSCAPE_API: ${{ secrets.FB_LANDSCAPE_API }}
+          FB_LANDSCAPE_TOKEN: ${{ secrets.FB_LANDSCAPE_TOKEN }}
+          FB_LANDSCAPE_USER: ${{ secrets.FB_LANDSCAPE_USER }}
+          FB_LANDSCAPE_BRAND: ${{ secrets.FB_LANDSCAPE_BRAND }}
+
+      - name: Save to the repository
+        run: |
+          git config user.name "dashboard-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/landscape.json
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Competitor data $(TZ=America/Vancouver date +%F)"
+            git push
+          fi
+
+      - name: Weekly summary email (Mondays, optional)
+        env:
+          SMTP_URL: ${{ secrets.SMTP_URL }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          FORCE: ${{ inputs.email }}
+        run: |
+          if [ -z "$SMTP_URL" ] || [ -z "$MAIL_TO" ]; then echo "Email not set up; skipping"; exit 0; fi
+          if [ "$(TZ=America/Vancouver date +%u)" != "1" ] && [ "$FORCE" != "true" ]; then echo "Not Monday; skipping"; exit 0; fi
+          node collector/weekly-email.mjs > "$RUNNER_TEMP/summary.eml" || { echo "Nothing to send"; exit 0; }
+          RCPT=()
+          IFS=',' read -ra ADDR <<< "$MAIL_TO"
+          for a in "${ADDR[@]}"; do RCPT+=(--mail-rcpt "$(echo "$a" | xargs)"); done
+          curl --silent --show-error --fail --ssl-reqd \
+            --url "$SMTP_URL" --user "$SMTP_USER:$SMTP_PASS" \
+            --mail-from "$MAIL_FROM" "${RCPT[@]}" \
+            --upload-file "$RUNNER_TEMP/summary.eml"
+          echo "Weekly summary sent"
