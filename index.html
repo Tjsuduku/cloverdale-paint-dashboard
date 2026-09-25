@@ -746,7 +746,7 @@ body.locked .app,body.locked .fab{visibility:hidden}
   .plats{gap:10px;margin-bottom:12px}
   .plat{padding:5px;border-radius:12px}
   .plat .sw{height:88px;padding:10px 11px}
-  .plat .sw .code{font-size:9.5px}.plat .sw .swn{display:none}.plat .sw .t .lt{width:30px;height:30px;border-radius:8px}
+  .plat .sw .code{font-size:9.5px;text-align:right;max-width:calc(100% - 38px);line-height:1.3}.plat .sw .swc{display:none}.plat .sw .t .lt{width:30px;height:30px;border-radius:8px}
   .plat .sw svg.spk{height:50px}
   .plat .lb{padding:10px 6px 4px}
   .plat .nm span{display:none}
@@ -1159,6 +1159,7 @@ a.lp-card:hover{border-color:var(--faint);box-shadow:var(--lift);transform:trans
   .ls-ctl .dseg button{padding:0 11px}
   .rh-row{grid-template-columns:84px minmax(0,1fr) 38px;gap:8px}
   .rh-row .nm i{display:none}
+  .rh-row .nm{white-space:normal;line-height:1.2;font-size:12px}
   .tw{grid-template-columns:116px minmax(0,1fr) 40px;gap:8px}
   .wks{height:200px;gap:5px}
   .wk-top{font-size:10px}
@@ -1179,7 +1180,7 @@ a.lp-card:hover{border-color:var(--faint);box-shadow:var(--lift);transform:trans
     <label for="gp">Password</label><div class="pw"><input id="gp" name="p" type="password" required><button type="button" id="gshow">Show</button></div>
     <button class="go" type="submit">Sign in<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
     <p class="err" id="gerr" aria-live="polite"></p>
-    <div class="foot"><span>Demo access</span><span>Data to Sep 23, 2026</span></div>
+    <div class="foot"><span>Demo access</span><span>Data to Sep 24, 2026</span></div>
   </form></div>
 </div>
 <script>
@@ -1220,7 +1221,7 @@ a.lp-card:hover{border-color:var(--faint);box-shadow:var(--lift);transform:trans
     </div>
     <div class="grow"></div>
     <div class="side-foot">
-      <div class="syncc" title="Synced Sep 24 from TJ's server"><i></i><div><b id="syncT">Synced Sep 24</b><span>TJ's server</span></div></div>
+      <div class="syncc" title="Synced Sep 25 from TJ's server"><i></i><div><b id="syncT">Synced Sep 25</b><span>TJ's server</span></div></div>
       <div class="themes" role="group" aria-label="Colour theme"><button type="button" data-th="light" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg>Light</button><button type="button" data-th="dark" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 9.5A5.5 5.5 0 0 1 6.5 3a5.5 5.5 0 1 0 6.5 6.5z"/></svg>Dark</button></div>
       <button class="iconb" id="themeRail" aria-label="Switch colour theme"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 9.5A5.5 5.5 0 0 1 6.5 3a5.5 5.5 0 1 0 6.5 6.5z"/></svg></button>
       <div class="who"><span class="av">CP1</span><div><b>CP1</b><span>Demo access</span></div><button class="iconb" id="signout" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2.5H3.5v11H6M10 5l3 3-3 3M13 8H6.5"/></svg></button></div>
@@ -1291,16 +1292,16 @@ const IG_RAW=`0908,,1,3,1854,,,,,,,
 0809,,2,2,682,,1,22,,,3,
 0813,,5,3,1866,,,,,,,
 0708,,4,2,739,,2,36,,1,8,
-0918,6350,3,1,1059,396,7,55,1019,,6,12
+0918,6350,3,1,1059,396,7,55,1032,,6,12
 0808,,2,2,1270,,,,,,,
 0917,6350,8,2,11003,6175,4,24,,1,4,158
 0812,,2,0,308,,,,,,,
 0829,,2,0,507,,,,,,,
 0719,,14,1,36745,,,,,,,
-0915,6323,30,1,14579,9389,2,52,1162,,2,234
+0915,6323,30,1,14579,9389,2,52,1168,,2,234
 0807,,3,2,819,,1,109,1686,,19,
 0811,,6,0,662,,,,,,,
-0916,6344,23,2,25986,19229,4,106,1177,,6,426
+0916,6344,23,2,25986,19229,4,109,1177,,6,426
 0728,,5,0,22441,,1,10,,,2,
 0717,,13,1,25980,,1,20,,1,3,
 0906,,6,1,19285,,1,35,,,1,
@@ -1344,7 +1345,7 @@ const IG_RAW=`0908,,1,3,1854,,,,,,,
 0627,,15,2,3818,,,,,,,
 0713,,2,1,1060,,2,57,,,6,
 0630,,108,0,27906,,1,103,1677,,15,
-0923,,,,,,3,18,,1,5,
+0923,6366,,,3787,6801,3,24,,1,5,63
 0704,,2,38,303,,,,,,,
 0910,,5,2,1197,352,1,55,1204,,6,38
 0701,,35,1,12790,,1,45,860,,2,
@@ -1361,16 +1362,17 @@ const IG_RAW=`0908,,1,3,1854,,,,,,,
 0710,,2,2,343,,1,19,,1,3,
 0901,,5,2,4503,,1,318,3407,,44,
 0821,,0,2,503,,1,31,954,,5,
-0922,6366,,,5713,7165,6,19,,,2,167
+0922,6366,3,1,5716,7167,6,19,,,2,167
 0703,,2,7,365,,,,,,,
 0831,,5,1,2003,,1,20,,,1,
 0824,,4,2,403,,1,15,,,1,
 0820,,3,2,1223,,,,,,,
-0921,6363,0,0,2931,4340,2,270,1114,,6,141
+0921,6363,0,0,2931,4340,2,269,1150,,6,141
 0723,,16,2,21835,,,,,,,
 0920,6362,9,0,1606,617,,,,,,38
 0722,,2,3,743,,,,,,,
-0721,,5,0,552,,,,,,,`;
+0721,,5,0,552,,,,,,,
+0924,,,,,,5,14,,,1,`;
 
 const FB_RAW=`0908,3021,1,,7302,,,,,,118,
 0816,2987,1,,170,,,,,,44,
@@ -1381,12 +1383,12 @@ const FB_RAW=`0908,3021,1,,7302,,,,,,118,
 0808,2981,,1,431,,,,,,21,
 0814,2986,,,1299,1,29,1349,,,15,
 0709,2868,2,,398,,,,,,38,
-0918,3041,3,0,8231,2,14,459,2,1,19,281
+0918,3040,3,0,8231,2,15,469,2,1,19,290
 0807,2980,4,,1179,1,77,1270,,,38,
 0819,2987,,1,203,,,,,,40,
 0813,2986,1,,497,,,,,,39,
 0708,2867,1,,349,,,,,,75,
-0917,3038,1,1,22355,5,19,,8,1,82,533
+0917,3038,1,1,22355,5,20,,8,2,82,546
 0806,2981,,,552,1,13,,6,,54,608
 0706,2864,1,,1063,1,102,,56,7,39,1899
 0818,2988,2,,842,1,17,,10,,19,550
@@ -1399,7 +1401,7 @@ const FB_RAW=`0908,3021,1,,7302,,,,,,118,
 0817,2989,,,828,1,13,879,,,52,
 0811,2985,2,,303,,,,,,29,
 0906,3018,2,,16995,,,,,,170,
-0916,3035,1,2,10824,1,52,,26,6,39,1509
+0916,3035,1,2,10824,1,52,,26,6,39,1521
 0823,2988,1,,167,,,,,,48,
 0827,2994,2,,411,1,4,,2,,61,456
 0810,2984,1,,585,,,,,,44,
@@ -1411,7 +1413,7 @@ const FB_RAW=`0908,3021,1,,7302,,,,,,118,
 0730,2976,2,,49602,,,,,,42,
 0909,3022,2,,1550,1,78,981,,,58,
 0828,2995,2,,395,,,,,,30,
-0915,3035,5,0,1924,2,155,1643,,,68,
+0915,3035,5,0,1924,2,155,1647,,,68,
 0822,2988,,,326,,,,,,24,
 0830,2996,1,,196,,,,,,46,
 0903,3010,2,,12667,1,96,2742,,,67,
@@ -1431,7 +1433,7 @@ const FB_RAW=`0908,3021,1,,7302,,,,,,118,
 0705,2862,,,300,,,,,,58,
 0804,2977,,,306,1,34,,17,3,31,980
 0910,3023,2,,1213,1,44,703,,,78,
-0922,3053,7,0,14170,1,18,,6,3,142,331
+0922,3052,7,0,14170,1,19,,6,3,142,360
 0716,2928,17,2,23953,,,,,,514,
 0628,,2,,61125,,,,,,,
 0727,2972,2,,48872,,,,,,58,
@@ -1443,7 +1445,7 @@ const FB_RAW=`0908,3021,1,,7302,,,,,,118,
 0711,2868,,,397,,,,,,9,
 0803,2977,,,98,,,,,,30,
 0913,3031,2,,312,,,,,,119,
-0923,,4,1,19965,3,17,,8,1,,445
+0923,3053,4,1,20006,3,32,,14,2,34,633
 0704,2861,,,307,,,,,,27,
 0710,2868,1,,372,1,15,,8,1,11,896
 0725,2970,3,1,30221,,,,,,51,
@@ -1455,13 +1457,14 @@ const FB_RAW=`0908,3021,1,,7302,,,,,,118,
 0714,2893,1,,256,,,,,,304,
 0723,2969,,,398,1,14,,5,2,48,890
 0901,3006,5,,3431,1,375,75456,,,76,
-0921,3050,2,0,2539,1,27,1520,,,189,
+0921,3050,2,0,2539,1,27,1550,,,189,
 0824,2990,,,488,1,26,,14,1,39,619
 0920,3043,0,0,395,,,,,,40,
 0626,,2,1,202799,,,,,,,
 0722,2969,1,,322,,,,,,28,
 0703,2861,1,1,231,,,,,,10,
-0721,2969,7,,32846,,,,,,38,`;
+0721,2969,7,,32846,,,,,,38,
+0924,,1,0,20294,4,11,,3,2,,307`;
 
 const LI_RAW=`0908,1180,1,643,46,18,2,12
 0816,1110,1,144,37,2,1,1
@@ -1636,21 +1639,22 @@ const YT_RAW=`0908,40,0,0
 0722,21,0,0
 0831,6,0,0
 0824,14,0,0
-0721,13,0,0`;
+0721,13,0,0
+0922,13,0,0`;
 const CURRENT = { ig:6366, fb:3053, li:1222, yt:231 };
 
-const POSTS_RAW=`ig|0921|Reel|Join the crew that's been painting Canada since 1933|https://www.instagram.com/reel/Ddj4hXkB40k/|1114|654|270|258|4|2|6||11.6
-ig|0918|Reel|Colour of the Year arrives September 25, 2026|https://www.instagram.com/reel/DdcdT6ijDBq/|1019|534|40|33|1|1|5||5.3
+const POSTS_RAW=`ig|0921|Reel|Join the crew that's been painting Canada since 1933|https://www.instagram.com/reel/Ddj4hXkB40k/|1150|676|269|257|4|2|6||11.5
+ig|0918|Reel|Colour of the Year arrives September 25, 2026|https://www.instagram.com/reel/DdcdT6ijDBq/|1032|544|40|33|1|1|5||5.3
 ig|0916|Reel|Working for an authentic Canadian company that moves|https://www.instagram.com/reel/DdXIfqJhVkW/|1177|731|50|43|1|1|5||11.7
-ig|0915|Reel|Proudly Canadian owned and operated since 1933|https://www.instagram.com/reel/DdUF7FsDJRt/|1162|838|52|49|1|0|2||9.9
+ig|0915|Reel|Proudly Canadian owned and operated since 1933|https://www.instagram.com/reel/DdUF7FsDJRt/|1168|844|52|49|1|0|2||9.9
 ig|0914|Reel|Canadian-owned. Canadian-operated. Canadian-proud.|https://www.instagram.com/reel/DdRhFM0ibZm/|4906|3381|337|66|25|13|233||13.1
-ig|0910|Reel|Canadian-owned. Canadian-operated. Canadian-proud. (first cut)|https://www.instagram.com/reel/DdHTvLFz_8T/|1204|723|55|45|3|1|6||9.6
-ig|0909|Reel|Authentically Canadian isn't a stereotype. It's a commitment.|https://www.instagram.com/reel/DdEt6jhghI8/|1769|1093|104|92|3|2|7||15.1
-ig|0907|Reel|Being authentically Canadian means real connections|https://www.instagram.com/reel/Dc_fgAJgQ4t/|1871|1138|84|66|2|0|16||7.6
-ig|0904|Reel|Authentically Canadian means reinvesting in Canada|https://www.instagram.com/reel/Dc38k_lD1-s/|1586|907|65|57|0|2|6||9.5
-ig|0903|Reel|93 years. Built for Canadian industry.|https://www.instagram.com/reel/Dc1WtQfDptV/|2036|1211|118|95|6|1|16||16.1
-ig|0901|Reel|Made by Canadians for Canadians (Authentically Canadian)|https://www.instagram.com/reel/Dcwj5XDDhI8/|3407|1933|318|222|46|6|44||21.5
-ig|0821|Reel|Deep moody blue + grey + red: Fan Club|https://www.instagram.com/reel/DcUErqxhFg5/|954|624|31|25|1|0|5||4.0
+ig|0910|Reel|Canadian-owned. Canadian-operated. Canadian-proud. (first cut)|https://www.instagram.com/reel/DdHTvLFz_8T/|1212|728|56|46|3|1|6||9.5
+ig|0909|Reel|Authentically Canadian isn't a stereotype. It's a commitment.|https://www.instagram.com/reel/DdEt6jhghI8/|1777|1096|104|92|3|2|7||15.2
+ig|0907|Reel|Being authentically Canadian means real connections|https://www.instagram.com/reel/Dc_fgAJgQ4t/|1875|1138|85|67|2|0|16||7.6
+ig|0904|Reel|Authentically Canadian means reinvesting in Canada|https://www.instagram.com/reel/Dc38k_lD1-s/|1590|910|65|57|0|2|6||9.4
+ig|0903|Reel|93 years. Built for Canadian industry.|https://www.instagram.com/reel/Dc1WtQfDptV/|2041|1212|118|95|6|1|16||16.0
+ig|0901|Reel|Made by Canadians for Canadians (Authentically Canadian)|https://www.instagram.com/reel/Dcwj5XDDhI8/|3415|1938|317|221|46|6|44||21.4
+ig|0821|Reel|Deep moody blue + grey + red: Fan Club|https://www.instagram.com/reel/DcUErqxhFg5/|958|627|31|25|1|0|5||4.0
 ig|0817|Reel|Made by Canadians. For Canadian homes.|https://www.instagram.com/reel/DcJ8ufxzKFN/|1114|769|35|27|3|1|4||3.5
 ig|0814|Reel|Industrial coatings: engineered trust|https://www.instagram.com/reel/DcBvFzKJyHz/|1091|697|58|48|2|4|4||9.7
 ig|0807|Reel|Meet the team behind your industrial coatings|https://www.instagram.com/reel/Dbv6tdNBOWD/|1686|1074|109|86|0|4|19||11.4
@@ -1663,20 +1667,20 @@ ig|0712|Reel|Built for busy spaces: Pre-Cat Epoxy|https://www.instagram.com/reel
 ig|0701|Reel|Happy Canada Day from Cloverdale Paint|https://www.instagram.com/reel/DaQnJM-A_DR/|860|587|45|42|1|0|2||6.2
 ig|0630|Reel|Inside our plant in London, Ontario|https://www.instagram.com/reel/DaN8tkDA1Ws/|1677|967|103|81|4|3|15||12.3
 ig|0626|Reel|Colour harmony isn't luck, it's a system|https://www.instagram.com/reel/DaEUx-pP00l/|691|518|28|18|3|3|4||4.7
-ig|0923|Image|Save 30% on Guardian, Sept 24 - Oct 4|https://www.instagram.com/p/DdpOeORisU9/|156|92|7|5|0|0|2||
-ig|0923|Image|Interior Design Show, Vancouver, Sept 24-27|https://www.instagram.com/p/Ddo7qypAbHd/|214|120|11|5|2|1|3||
-ig|0922|Carousel|Rosemary: a little green, a little mystery|https://www.instagram.com/p/DdmWGYhms7G/|549|273|19|16|1|0|2||
-ig|0918|Carousel|Lavender Scent|https://www.instagram.com/p/DdcDaXAGvk-/|912|384|15|12|2|0|1||
-ig|0917|Carousel|Midnight Magic|https://www.instagram.com/p/DdZafbLE829/|939|430|24|19|0|1|4||
-ig|0916|Image|Sedin vs Sedin at Grouse Mountain|https://www.instagram.com/p/DdWoRDvg9GE/|1840|1024|56|55|0|0|1||
-ig|0911|Image|Picante CA227|https://www.instagram.com/p/DdKB_ulGGCQ/|858|461|28|22|4|1|1||
-ig|0906|Image|Happy Labour Day, Canada|https://www.instagram.com/p/Dc9DW8jgUrw/|1058|527|35|33|1|0|1||
-ig|0831|Carousel|The colours of growing up|https://www.instagram.com/p/DctkhypoGN5/|760|329|20|17|2|0|1||
-ig|0828|Image|Pride in Canada never freezes (Lake Ontario)|https://www.instagram.com/p/DclihWNAeXx/|1477|835|68|57|2|3|6||
-ig|0828|Image|Copper Moon: Copper EX110|https://www.instagram.com/p/DckcmLwgbL3/|763|423|32|28|2|0|2||
-ig|0827|Carousel|New to painting? Exterior guide|https://www.instagram.com/p/DcjeDP-nf5R/|634|265|12|11|0|1|0||
-ig|0826|Carousel|Kids' room colours that grow with them|https://www.instagram.com/p/Dcg-P6CgaSp/|1125|414|28|21|1|1|5||
-ig|0824|Image|Sunstone CA223|https://www.instagram.com/p/DcbeuyQgqZT/|546|320|15|13|1|0|1||
+ig|0923|Image|Save 30% on Guardian, Sept 24 - Oct 4|https://www.instagram.com/p/DdpOeORisU9/|230|125|10|8|0|0|2||
+ig|0923|Image|Interior Design Show, Vancouver, Sept 24-27|https://www.instagram.com/p/Ddo7qypAbHd/|399|217|14|8|2|1|3||
+ig|0922|Carousel|Rosemary: a little green, a little mystery|https://www.instagram.com/p/DdmWGYhms7G/|575|284|19|16|1|0|2||
+ig|0918|Carousel|Lavender Scent|https://www.instagram.com/p/DdcDaXAGvk-/|917|385|15|12|2|0|1||
+ig|0917|Carousel|Midnight Magic|https://www.instagram.com/p/DdZafbLE829/|946|435|24|19|0|1|4||
+ig|0916|Image|Sedin vs Sedin at Grouse Mountain|https://www.instagram.com/p/DdWoRDvg9GE/|1906|1049|59|58|0|0|1||
+ig|0911|Image|Picante CA227|https://www.instagram.com/p/DdKB_ulGGCQ/|862|464|28|22|4|1|1||
+ig|0906|Image|Happy Labour Day, Canada|https://www.instagram.com/p/Dc9DW8jgUrw/|1060|529|35|33|1|0|1||
+ig|0831|Carousel|The colours of growing up|https://www.instagram.com/p/DctkhypoGN5/|763|331|20|17|2|0|1||
+ig|0828|Image|Pride in Canada never freezes (Lake Ontario)|https://www.instagram.com/p/DclihWNAeXx/|1481|838|68|57|2|3|6||
+ig|0828|Image|Copper Moon: Copper EX110|https://www.instagram.com/p/DckcmLwgbL3/|767|425|32|28|2|0|2||
+ig|0827|Carousel|New to painting? Exterior guide|https://www.instagram.com/p/DcjeDP-nf5R/|637|268|12|11|0|1|||
+ig|0826|Carousel|Kids' room colours that grow with them|https://www.instagram.com/p/Dcg-P6CgaSp/|1128|417|28|21|1|1|5||
+ig|0824|Image|Sunstone CA223|https://www.instagram.com/p/DcbeuyQgqZT/|549|322|15|13|1|0|1||
 ig|0818|Carousel|Bathroom retreat: Black Oak, White Pumpkin, Hops|https://www.instagram.com/p/DcMUFc3gYdZ/|1470|538|31|18|1|5|7||
 ig|0814|Carousel|Covered porch colour: look outside|https://www.instagram.com/p/DcCSvNeEw7E/|965|420|29|24|1|1|3||
 ig|0809|Image|ProDec: a British finish, now in Canada|https://www.instagram.com/p/Db0tgC-DxTQ/|1122|628|22|18|1|0|3||
@@ -1692,33 +1696,33 @@ ig|0710|Image|2026 exterior colour trends|https://www.instagram.com/p/DaoWlf_loh
 ig|0708|Image|Super II Ultra White: one coat, better hide|https://www.instagram.com/p/DajCm-Iy7gO/|1148|567|25|16|0|1|8||
 ig|0708|Image|Extreme heat is a human issue|https://www.instagram.com/p/Daiypk9Bmqr/|755|375|11|11|0|0|0||
 ig|0629|Image|Where to start: room-by-room paint guide|https://www.instagram.com/p/DaLbkzvDh4b/|690|372|13|11|1|0|1||
-fb|0921|Reel|Join the Cloverdale Fan Club: 93 years trusted|https://www.facebook.com/reel/848049378329875/|1520||19|19|||||11
-fb|0918|Reel|Colour of the Year arrives September 25|https://www.facebook.com/reel/1672641327612107/|459||4|4|||||4
-fb|0915|Reel|Proudly Canadian owned and operated since 1933|https://www.facebook.com/reel/1092463976837212/|1643||140|140|||||13
+fb|0921|Reel|Join the Cloverdale Fan Club: 93 years trusted|https://www.facebook.com/reel/848049378329875/|1550||19|19|||||10
+fb|0918|Reel|Colour of the Year arrives September 25|https://www.facebook.com/reel/1672641327612107/|469||5|5|||||4
+fb|0915|Reel|Proudly Canadian owned and operated since 1933|https://www.facebook.com/reel/1092463976837212/|1647||140|140|||||13
 fb|0914|Reel|Canadian-owned. Canadian-operated. Canadian-proud.|https://www.facebook.com/reel/1110258224862137/|570||29|29|||||13
-fb|0910|Reel|Canadian-owned. Canadian-operated. (first cut)|https://www.facebook.com/reel/1394787545364035/|703||35|35|||||10
-fb|0909|Reel|Not a stereotype. A commitment.|https://www.facebook.com/reel/1329083132637355/|981||62|62|||||15
-fb|0907|Reel|Authentically Canadian means real connections|https://www.facebook.com/reel/963662086751126/|698||35|35|||||6
-fb|0904|Reel|Authentically Canadian means reinvesting in Canada|https://www.facebook.com/reel/929179876403875/|1845||35|35|||||9
-fb|0903|Reel|93 years. Built for Canadian industry.|https://www.facebook.com/reel/1446933654165283/|2742||78|78|||||12
-fb|0901|Reel|Made by Canadians. For Canada. (Authentically Canadian)|https://www.facebook.com/reel/4018832775089431/|75456||271|271|||||8
-fb|0821|Reel|Deep moody blue + grey + red: Fan Club|https://www.facebook.com/reel/1942984927088285/|684||6|6|||||4
+fb|0910|Reel|Canadian-owned. Canadian-operated. (first cut)|https://www.facebook.com/reel/1394787545364035/|711||36|36|||||9
+fb|0909|Reel|Not a stereotype. A commitment.|https://www.facebook.com/reel/1329083132637355/|988||62|62|||||15
+fb|0907|Reel|Authentically Canadian means real connections|https://www.facebook.com/reel/963662086751126/|704||35|35|||||6
+fb|0904|Reel|Authentically Canadian means reinvesting in Canada|https://www.facebook.com/reel/929179876403875/|1848||35|35|||||9
+fb|0903|Reel|93 years. Built for Canadian industry.|https://www.facebook.com/reel/1446933654165283/|2745||78|78|||||12
+fb|0901|Reel|Made by Canadians. For Canada. (Authentically Canadian)|https://www.facebook.com/reel/4018832775089431/|75469||271|271|||||8
+fb|0821|Reel|Deep moody blue + grey + red: Fan Club|https://www.facebook.com/reel/1942984927088285/|687||6|6|||||4
 fb|0817|Reel|Made by Canadians. For Canadian homes.|https://www.facebook.com/reel/1082156957484047/|879||10|10|||||6
 fb|0814|Reel|Industrial coatings: engineered trust|https://www.facebook.com/reel/1739964687147268/|1349||28|28|||||9
 fb|0807|Reel|Meet the team behind your industrial coatings|https://www.facebook.com/reel/1826136802078430/|1270||65|65|||||9
 fb|0724|Reel|Don't leave ten dollars on the table: Fan Club|https://www.facebook.com/reel/1391477732898716/|109878||219|219|||||5
 fb|0715|Reel|Four kitchens, four moods|https://www.facebook.com/reel/1038693078876120/|1251||8|8|||||6
-fb|0923|Photo|Save 30% on Guardian, Sept 24 - Oct 4|https://facebook.com/1347481163999576/posts/1717980776949611|88|56|1|1|0||0|0|
-fb|0923|Photo|Interior Design Show, Sept 24-27|https://facebook.com/1347481163999576/posts/1717868523627503|357|246|8|7|0||1|0|
-fb|0922|Album|Rosemary: a little green, a little mystery|https://facebook.com/1347481163999576/posts/1716869373727418|331|194|12|8|1||3|0|
-fb|0918|Album|Lavender Scent|https://facebook.com/1347481163999576/posts/1712911907456498|281|190|7|6|0||1|0|
-fb|0917|Album|Midnight Magic|https://facebook.com/1347481163999576/posts/1711841297563559|533|363|11|10|0||1|0|
-fb|0916|Photo|Sedin vs Sedin at Grouse Mountain|https://facebook.com/1347481163999576/posts/1710735414340814|1509|921|26|20|0||6|5|
-fb|0911|Photo|Picante CA227|https://facebook.com/1347481163999576/posts/1705957738151915|375|231|5|4|0||1|0|
-fb|0831|Album|The colours of growing up|https://facebook.com/1347481163999576/posts/1695172435897112|627|337|8|5|2||1|0|
-fb|0827|Album|Painting your exterior for the first time|https://facebook.com/1347481163999576/posts/1691399956274360|456|251|2|2|0||0|0|
-fb|0826|Album|Kids' room colours that grow with them|https://facebook.com/1347481163999576/posts/1690475303033492|709|407|8|4|1||3|0|
-fb|0824|Photo|CA223 Sunstone|https://facebook.com/1347481163999576/posts/1688394073241615|619|350|12|10|1||1|0|
+fb|0923|Photo|Save 30% on Guardian, Sept 24 - Oct 4|https://facebook.com/1347481163999576/posts/1717980776949611|128|83|2|2|0||0|0|
+fb|0923|Photo|Interior Design Show, Sept 24-27|https://facebook.com/1347481163999576/posts/1717868523627503|505|334|16|11|3||2|0|
+fb|0922|Album|Rosemary: a little green, a little mystery|https://facebook.com/1347481163999576/posts/1716869373727418|360|209|13|9|1||3|0|
+fb|0918|Album|Lavender Scent|https://facebook.com/1347481163999576/posts/1712911907456498|290|194|7|6|0||1|0|
+fb|0917|Album|Midnight Magic|https://facebook.com/1347481163999576/posts/1711841297563559|546|372|12|10|0||2|0|
+fb|0916|Photo|Sedin vs Sedin at Grouse Mountain|https://facebook.com/1347481163999576/posts/1710735414340814|1521|925|26|20|0||6|5|
+fb|0911|Photo|Picante CA227|https://facebook.com/1347481163999576/posts/1705957738151915|384|235|5|4|0||1|0|
+fb|0831|Album|The colours of growing up|https://facebook.com/1347481163999576/posts/1695172435897112|633|341|8|5|2||1|0|
+fb|0827|Album|Painting your exterior for the first time|https://facebook.com/1347481163999576/posts/1691399956274360|460|253|2|2|0||0|0|
+fb|0826|Album|Kids' room colours that grow with them|https://facebook.com/1347481163999576/posts/1690475303033492|714|411|9|4|1||4|0|
+fb|0824|Photo|CA223 Sunstone|https://facebook.com/1347481163999576/posts/1688394073241615|622|352|12|10|1||1|0|
 fb|0818|Album|Bathroom retreat: Black Oak, White Pumpkin, Hops|https://facebook.com/1347481163999576/posts/1682656320482057|550|321|7|6|1||0|1|
 fb|0810|Photo|ProDec: a British finish, now in Canada|https://facebook.com/1347481163999576/posts/1673947061352983|844|483|10|9|0||1|0|
 fb|0806|Photo|ProDec Ice Fusion brushes now in stores|https://facebook.com/1347481163999576/posts/1670452901702399|608|361|7|7|0||0|0|
@@ -1751,7 +1755,11 @@ li|0706|Image|Extreme heat is a human issue|https://www.linkedin.com/feed/update
 li|0706|Image|Summer exterior products|https://www.linkedin.com/feed/update/urn:li:share:7479907829298933760|292|292|8|8|0||0|10|
 li|0701|Video|Video post, Jul 1|https://www.linkedin.com/feed/update/urn:li:ugcPost:7478101427353976834|318|827|30|27|0||3|47|
 li|0629|Multi-image|Cool roof: simplest way to tackle heat|https://www.linkedin.com/feed/update/urn:li:ugcPost:7474864878004948992|248|248|2|2|0||0|25|
-yt|0806|Video|The True North of Industrial Coatings|https://www.youtube.com/watch?v=DCjevqqpILY|25||1|1|0||0||90`;
+yt|0806|Video|The True North of Industrial Coatings|https://www.youtube.com/watch?v=DCjevqqpILY|25||1|1|0||0||90
+ig|0924|Image|Save 30% on Guardian, Sept 24 - Oct 4 (reminder)|https://www.instagram.com/p/DdrQ_CjHyJa/|142|86|7|6|0|0|1||
+ig|0924|Image|Fan Club Saturday at White Rock|https://www.instagram.com/p/DdrQ8RbDj1p/|206|128|7|6|1|0|||
+fb|0924|Photo|Save 30% on Guardian, Sept 24 - Oct 4 (reminder)|https://facebook.com/1347481163999576/posts/1718878703526485|158|111|5|3|0||2|0|
+fb|0924|Photo|Fan Club Saturday at White Rock|https://facebook.com/1347481163999576/posts/1718878530193169|149|100|3|3|0||0|0|`;
 
 const IG_CITIES=[["Calgary, AB",7.06],["Edmonton, AB",4.73],["Surrey, BC",4.09],["Winnipeg, MB",3.66],["Vancouver, BC",2.97],["Saskatoon, SK",2.68],["Toronto, ON",1.97],["Victoria, BC",1.86],["Langley, BC",1.51],["Regina, SK",1.26]];
 const IG_AGE=[["13-17",1,3,4],["18-24",42,60,65],["25-34",352,420,414],["35-44",804,728,527],["45-54",628,439,297],["55-64",483,195,186],["65+",261,114,144]]; // F,M,U
@@ -1978,7 +1986,10 @@ const GLY={
   yt:(s=22)=>`<svg class="gly" width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true"><path d="${BI.youtube}" fill="#fff"/></svg>`
 };
 const HEX={ig:'9B37B8',fb:'1877F2',li:'00897B',yt:'EE3322'};
-const SWN={ig:'Orchid',fb:'Harbour',li:'Spruce',yt:'Signal'};
+// Real Cloverdale Paint colours, one per channel (name, colour code, paint hex)
+const SWN={ig:'Grape Riot',fb:'Breathtaking Blue',li:'Emerald Accent',yt:'Pointers Red'};
+const SWC={ig:'AC138',fb:'7327',li:'7509',yt:'8093'};
+const SWH={ig:'#915783',fb:'#58A5D7',li:'#167567',yt:'#C74041'};
 const SPEC=['#E5007E','#1BA9E8','#00843D','#A8C43A','#FFD500','#F7A600','#E3141F'];
 const ICO={
   spark:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="1.9"><path d="M5 18.5V7.5a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H8.5z"/><path d="M9 9.5h6M9 12.5h4"/></svg>',
@@ -1992,7 +2003,7 @@ const ICO={
 };
 
 /* dates + data */
-const DAY=864e5, START=new Date(2026,5,26), END=new Date(2026,8,23), DAYS=Math.round((END-START)/DAY)+1;
+const DAY=864e5, START=new Date(2026,5,26), END=new Date(2026,8,24), DAYS=Math.round((END-START)/DAY)+1;
 const dateAt=i=>new Date(START.getTime()+i*DAY);
 const idxOf=mmdd=>Math.round((new Date(2026,+mmdd.slice(0,2)-1,+mmdd.slice(2))-START)/DAY);
 const idxDate=d=>Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-START)/DAY);
@@ -2070,7 +2081,7 @@ function chipSpark(vals,W=260,H=66){ const v=vals.map(x=>x??0); let mn=Math.min(
 function renderPlats(){ const n=state.period; const el=$('#plats'); el.innerHTML='';
   SOC.forEach((k,i)=>{ const a=agg(k); const b=h('button',{class:'plat',style:`--c:${cvar(k)};animation-delay:${i*70}ms`,'aria-label':`Open ${CH[k].name}: ${fmtInt(a.followers)} ${CH[k].unit.toLowerCase()}`});
     const dl=a.net?`<span class="chip ${a.net<0?'down':''}">${a.net>0?'+':'−'}${fmtInt(Math.abs(a.net))} · ${fmtPct(Math.abs(a.growth),1)}</span>`:'<span class="chip flat">No change</span>';
-    b.innerHTML=`<div class="sw"><div class="t"><span class="lt">${LG[k](22)}</span><span class="code"><span class="swn">${SWN[k].toUpperCase()} · </span>#${HEX[k]}</span></div>${chipSpark(S[k].followers.slice(DAYS-n))}</div>
+    b.innerHTML=`<div class="sw" style="--c:${SWH[k]}" title="Cloverdale Paint colour: ${SWN[k]} (${SWC[k]})"><div class="t"><span class="lt">${LG[k](22)}</span><span class="code"><span class="swn">${SWN[k].toUpperCase()}</span><span class="swc"> · ${SWC[k]}</span></span></div>${chipSpark(S[k].followers.slice(DAYS-n))}</div>
       <div class="lb"><div class="nm"><b>${CH[k].name}</b><span>${esc(k==='ig'?CH[k].handle:k==='yt'?'Channel':'Page')}</span></div><div class="big">0</div><div class="unit">${CH[k].unit}</div>
       <div class="ft">${dl}<span class="mono">${a.posts} ${k==='yt'?'videos':'posts'}</span><span class="go" aria-hidden="true">→</span></div></div>`;
     b.onclick=()=>openChannel(k); el.appendChild(b); countUp($('.big',b),a.followers,v=>fmtInt(v));
@@ -2817,7 +2828,7 @@ function openPost(p,fromDrawer){ const back=fromDrawer?drawerCh:null; const d=h(
   const br=[['Likes / reactions',p.likes],['Comments',p.comments],['Shares',p.shares],['Saves',p.saves],['Clicks',p.clicks]].filter(x=>x[1]); const x=MED[p.ch]?p.inter/MED[p.ch]:null;
   const geo=p.ch==='ig'||p.ch==='fb'?COUNTRIES[p.ch].slice(0,5):null;
   d.innerHTML=`<div class="d-head" style="padding-bottom:16px"><div class="r1"><div class="d-title">${LG[p.ch](42)}<div><h2 style="font-size:clamp(19px,2.4vw,24px);max-width:36ch;">${esc(p.title)}</h2><div class="d-meta">${CH[p.ch].name} ${p.type} · posted ${dLong(p.date)}</div></div></div><div style="display:flex;gap:8px">${back?'<button class="x" id="pb" aria-label="Back"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 3L5 8l5 5"/></svg></button>':''}<button class="x" id="px" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div></div></div>
-  <div class="d-body"><div class="split" style="grid-template-columns:minmax(0,230px) minmax(0,1fr)"><div style="display:grid;gap:12px;align-content:start"><div class="pvis ${p.isVid?'v':''}" style="--c:${cvar(p.ch)}"><div class="code"><span>${SWN[p.ch].toUpperCase()} · #${HEX[p.ch]}</span><span>${p.type.toUpperCase()}</span></div><span class="pl">${p.isVid?ICO.play:ICO.img}</span><div class="cap">${esc(p.title)}</div></div><a class="btn dark" style="justify-content:center" href="${p.url}" target="_blank" rel="noopener">View on ${CH[p.ch].name} ${ICO.ext}</a></div>
+  <div class="d-body"><div class="split" style="grid-template-columns:minmax(0,230px) minmax(0,1fr)"><div style="display:grid;gap:12px;align-content:start"><div class="pvis ${p.isVid?'v':''}" style="--c:${SWH[p.ch]}"><div class="code"><span>${SWN[p.ch].toUpperCase()} · ${SWC[p.ch]}</span><span>${p.type.toUpperCase()}</span></div><span class="pl">${p.isVid?ICO.play:ICO.img}</span><div class="cap">${esc(p.title)}</div></div><a class="btn dark" style="justify-content:center" href="${p.url}" target="_blank" rel="noopener">View on ${CH[p.ch].name} ${ICO.ext}</a></div>
     <div style="display:grid;gap:16px;align-content:start"><div class="kpis">${k.map(([l,v,t],i)=>`<div class="kpi" style="animation-delay:${i*35}ms"><div class="l">${l}</div><div class="v">${t===1?fmtPct(v):t==='s'?v.toFixed(1)+'s':fmt(v)}</div></div>`).join('')}</div>
     ${x!=null?`<div class="card"><h3 style="margin:0 0 8px">Against a typical ${CH[p.ch].name} post</h3><p style="margin:0;color:var(--ink-2)"><b>${x>=1?x.toFixed(1)+'×':Math.round(x*100)+'%'}</b> ${x>=1?'the':'of the'} interactions of the median ${CH[p.ch].name} post in the last 90 days (${fmtInt(MED[p.ch])}).</p></div>`:''}
     ${br.length?`<div class="card"><h3 style="margin:0 0 12px">Engagement breakdown</h3>${hbars(br,{color:cvar(p.ch),vfmt:fmt})}</div>`:''}
@@ -2863,7 +2874,7 @@ function buckets(k,R){ const d=dailySeen(k,R.s,R.e); const n=d.length; if(n<=16)
 function rpBars(bs,color){ const mx=Math.max(1,...bs.map(b=>b.v)); const every=bs.length>10?2:1;
   return `<div class="rp-bars" style="--n:${bs.length}">${bs.map((b,i)=>`<div class="rp-bar"><span class="v">${b.v?fmt(b.v):'0'}</span><i style="height:${Math.max(b.v?2:0,b.v/mx*100)}%;background:${color};${b.part?'opacity:.55':''}"></i><span class="xl">${i%every===0||i===bs.length-1?b.l:''}</span></div>`).join('')}</div>`; }
 function rpHead(R){ return `<header class="rp-hd"><img class="rp-logo" src="${LOGO}" alt="Cloverdale Paint"><div class="rp-hr"><span>Social media report</span><b>${dShort(R.from)} – ${dShort(R.to)}, ${R.to.getFullYear()}</b></div></header><div class="rp-spec"></div>`; }
-function rpFoot(i,N){ return `<footer class="rp-ft"><span>Cloverdale Paint · Prepared by TJ · Figures from TJ's server, synced ${dLong(new Date(2026,8,24))}</span><span>Page ${i} of ${N}</span></footer>`; }
+function rpFoot(i,N){ return `<footer class="rp-ft"><span>Cloverdale Paint · Prepared by TJ · Figures from TJ's server, synced ${dLong(new Date(2026,8,25))}</span><span>Page ${i} of ${N}</span></footer>`; }
 const rgba=(hx,a)=>{ const v=parseInt(hx.slice(1),16); return `rgba(${v>>16&255},${v>>8&255},${v&255},${a})`; };
 function tile(icon,color,big,label,c,extra){ return `<div class="rp-tile"><div class="rp-ti" style="background:${rgba(color,.09)};color:${color}">${icoImg(icon,color,22)}</div><div class="rp-big">${big}</div><div class="rp-lbl">${label}</div>${c?badge(c):''}<p class="rp-exp">${c?c.text:''}${extra?' '+extra:''}</p></div>`; }
 
@@ -2963,7 +2974,7 @@ function reportPages(R,chs,note){
       <div class="rp-c2"><div><h3>Share of all reactions</h3><p class="rp-exp">Who got the most attention in total.</p>${bars(sh,'share',smx)}</div><div><h3>Reactions per follower</h3><p class="rp-exp">Who got the strongest response for their size.</p>${bars(rt,'rate',rmx)}</div></div>
       <p class="rp-exp">On this page, reactions means the likes, comments and shares anyone can see on a public page. Per follower divides each post's reactions by the brand's followers that day.</p></div>`; })():`<div class="rp-title"><div class="rp-eyebrow">Reference</div><h1>Words used in this report</h1></div>`}
     <div class="rp-card rp-gloss"><div class="rp-ch2"><h2>${icoImg('book','#15171A',18)}${hasComp?'Words used in this report':'What each word means'}</h2></div><dl>${gloss.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl></div>
-    <div class="rp-about"><b>About these numbers</b><p>Figures come from the official Instagram, Facebook, LinkedIn and YouTube statistics, collected on TJ's server.${hasComp?' Other brands’ numbers are the public counts on their pages.':''} Instagram follower counts before September 13 are estimated from daily gains and losses. ${R.to.getTime()===END.getTime()?'September 23 was still in progress when the data was collected.':''}</p></div>
+    <div class="rp-about"><b>About these numbers</b><p>Figures come from the official Instagram, Facebook, LinkedIn and YouTube statistics, collected on TJ's server.${hasComp?' Other brands’ numbers are the public counts on their pages.':''} Instagram follower counts before September 13 are estimated from daily gains and losses. ${R.to.getTime()===END.getTime()?'September 24 was still in progress when the data was collected.':''}</p></div>
   </div>`);
   const N=pages.length; return pages.map((h,i)=>`<section class="rp-page">${h}${rpFoot(i+1,N)}</section>`);
 }
@@ -3070,9 +3081,9 @@ function snapshot(){ const o={company:'Cloverdale Paint',period:PL[state.period]
 const TARGETS={overview:'#top',posts:'#sec-posts',geography:'#sec-geo',benchmark:'#sec-market',best_time:'#sec-time',growth:'#scaleCard'};
 function jump(sel){ const el=$(sel); if(!el) return; el.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'}); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); }
 const SUGG=['Monthly report','Bi-weekly report','Instagram report','Top reels this month','Compare to last month','Followers in Calgary','What did we post on Sep 14','Best time to post','How do we compare to competitors?','Where are our followers?'];
-function openChat(){ if(chatEl) return; document.body.classList.add('chat-open'); chatEl=h('div',{class:'chat',role:'dialog','aria-label':'Ask the data'});
-  chatEl.innerHTML=`<div class="chat-h"><div class="chat-av"><img src="${MARK}" alt=""></div><div><b>Ask the data</b><span><i></i>Answers from every number on this dashboard</span></div><button class="x" id="chx" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div><div class="msgs" id="msgs"></div><div class="sugg" id="sugg"></div><form id="chf"><input id="chq" placeholder="Ask anything, e.g. monthly report" autocomplete="off" aria-label="Your question"><button type="submit" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></form>`;
-  document.body.appendChild(chatEl); $('#chx',chatEl).onclick=closeChat; addBot({text:"Hi. Ask me anything about Cloverdale's social channels. I can write a full report for any period, break down one channel, find top posts, show where followers live, compare with competitors or the previous period, and suggest the best time to post."});
+function openChat(){ if(chatEl) return; document.body.classList.add('chat-open'); chatEl=h('div',{class:'chat',role:'dialog','aria-label':'Cloverdale Paint AI'});
+  chatEl.innerHTML=`<div class="chat-h"><div class="chat-av"><img src="${MARK}" alt=""></div><div><b>Cloverdale Paint AI</b><span><i></i>Answers from every number on this dashboard</span></div><button class="x" id="chx" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div><div class="msgs" id="msgs"></div><div class="sugg" id="sugg"></div><form id="chf"><input id="chq" placeholder="Ask anything, e.g. monthly report" autocomplete="off" aria-label="Your question"><button type="submit" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></form>`;
+  document.body.appendChild(chatEl); $('#chx',chatEl).onclick=closeChat; addBot({text:"Hi, I'm Cloverdale Paint AI. Ask me anything about Cloverdale's social channels. I can write a full report for any period, break down one channel, find top posts, show where followers live, compare with competitors or the previous period, and suggest the best time to post."});
   const sg=$('#sugg',chatEl); SUGG.forEach(t=>{ const b=h('button',{type:'button'},t); b.onclick=()=>ask(t); sg.appendChild(b); });
   $('#chf',chatEl).onsubmit=e=>{ e.preventDefault(); const v=$('#chq',chatEl).value.trim(); if(v){ ask(v); $('#chq',chatEl).value=''; } }; if(innerWidth>760) setTimeout(()=>$('#chq',chatEl)&&$('#chq',chatEl).focus(),50); }
 function closeChat(){ if(chatEl){ chatEl.remove(); chatEl=null; } document.body.classList.remove('chat-open'); }
@@ -3102,7 +3113,7 @@ function renderAll(){ const M=state.mods; vis('#plats',M.plats); vis('.row2',M.h
   if(M.hero) renderHero(); if(M.gl) renderGL(); if(M.scale) renderScale(); if(M.km) renderRow4(); if(M.posts) renderPosts(); if(M.rail){ renderWeek(); renderCal(); } if(M.geo) renderGeo(); if(M.bench) renderLandscape(); if(M.time) renderHeat();
   if(chatEl){ const sp=$('.chat-h span',chatEl); if(sp) sp.innerHTML='<i></i>Cloverdale Paint · '+PL[state.period]; }
   if($('.drawer',layer)&&drawerCh&&!$('#pb',layer)&&!$('#px',layer)) renderDrawer(); }
-$('#footSrc').textContent=`Source: TJ's server, synced September 24, 2026. Data covers ${dShort(START)} to ${dShort(END)}, 2026; Sep 23 is a partial day. Instagram follower counts are exact from Sep 13, and earlier days are rebuilt from daily gains and losses. Competitor numbers are public page data, updated daily. Platform logos belong to their owners.`;
+$('#footSrc').textContent=`Source: TJ's server, synced September 25, 2026. Data covers ${dShort(START)} to ${dShort(END)}, 2026; Sep 24 is a partial day. Instagram follower counts are exact from Sep 13, and earlier days are rebuilt from daily gains and losses. Competitor numbers are public page data, updated daily. Platform logos belong to their owners.`;
 let rt, lw=innerWidth; addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(Math.abs(innerWidth-lw)<40) return; lw=innerWidth; if(state.mods.gl) renderGL(); if(state.mods.geo) drawMap(state.geoView,state.geoNet,[]); $$('.seg').forEach(segPill); $$('.tabs').forEach(tabInk); },180); });
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ $$('.seg').forEach(segPill); $$('.tabs').forEach(tabInk); });
 renderAll();
