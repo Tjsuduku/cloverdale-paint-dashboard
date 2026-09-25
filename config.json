@@ -1,0 +1,60 @@
+{
+  "timezone": "America/Vancouver",
+  "graphVersion": "v25.0",
+  "keepDays": 400,
+  "dashboardUrl": "https://tjsuduku.github.io/cloverdale-paint-dashboard/",
+  "brands": [
+    {
+      "id": "cloverdale",
+      "name": "Cloverdale Paint",
+      "short": "Cloverdale",
+      "focus": true,
+      "facebookPageId": "193925330642358",
+      "instagram": "cloverdalepaint",
+      "youtube": "@cloverdalepaint",
+      "x": ""
+    },
+    {
+      "id": "benjaminmoore",
+      "name": "Benjamin Moore",
+      "short": "Benjamin Moore",
+      "facebookPageId": "118055766322",
+      "instagram": "benjaminmoore",
+      "youtube": "@benjaminmoore",
+      "x": ""
+    },
+    {
+      "id": "sherwinwilliams",
+      "name": "Sherwin-Williams",
+      "short": "Sherwin-Williams",
+      "facebookPageId": "309180132920",
+      "instagram": "sherwinwilliams",
+      "youtube": "@sherwin-williams",
+      "x": ""
+    },
+    {
+      "id": "behr",
+      "name": "Behr",
+      "short": "Behr",
+      "facebookPageId": "111762511551",
+      "instagram": "behrpaint",
+      "youtube": "@behrpaints",
+      "x": ""
+    },
+    {
+      "id": "dulux",
+      "name": "Dulux",
+      "short": "Dulux",
+      "facebookPageId": "177213009058713",
+      "instagram": "duluxuk",
+      "youtube": "@DuluxUK",
+      "x": ""
+    }
+  ],
+  "channels": {
+    "facebook": { "enabled": true, "refreshDays": 35 },
+    "instagram": { "enabled": true, "posts": 30 },
+    "youtube": { "enabled": true, "videos": 15 },
+    "x": { "enabled": false, "posts": 10, "weekday": 1 }
+  }
+}
