@@ -1180,7 +1180,7 @@ a.lp-card:hover{border-color:var(--faint);box-shadow:var(--lift);transform:trans
     <label for="gp">Password</label><div class="pw"><input id="gp" name="p" type="password" required><button type="button" id="gshow">Show</button></div>
     <button class="go" type="submit">Sign in<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
     <p class="err" id="gerr" aria-live="polite"></p>
-    <div class="foot"><span>Demo access</span><span>Data to Sep 24, 2026</span></div>
+    <div class="foot"><span>Demo access</span><span>Data to Sep 26, 2026</span></div>
   </form></div>
 </div>
 <script>
@@ -1221,7 +1221,7 @@ a.lp-card:hover{border-color:var(--faint);box-shadow:var(--lift);transform:trans
     </div>
     <div class="grow"></div>
     <div class="side-foot">
-      <div class="syncc" title="Synced Sep 25 from TJ's server"><i></i><div><b id="syncT">Synced Sep 25</b><span>TJ's server</span></div></div>
+      <div class="syncc" title="Synced Sep 28 from TJ's server"><i></i><div><b id="syncT">Synced Sep 28</b><span>TJ's server</span></div></div>
       <div class="themes" role="group" aria-label="Colour theme"><button type="button" data-th="light" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg>Light</button><button type="button" data-th="dark" aria-pressed="false"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 9.5A5.5 5.5 0 0 1 6.5 3a5.5 5.5 0 1 0 6.5 6.5z"/></svg>Dark</button></div>
       <button class="iconb" id="themeRail" aria-label="Switch colour theme"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 9.5A5.5 5.5 0 0 1 6.5 3a5.5 5.5 0 1 0 6.5 6.5z"/></svg></button>
       <div class="who"><span class="av">CP1</span><div><b>CP1</b><span>Demo access</span></div><button class="iconb" id="signout" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2.5H3.5v11H6M10 5l3 3-3 3M13 8H6.5"/></svg></button></div>
@@ -1372,7 +1372,9 @@ const IG_RAW=`0908,,1,3,1854,,,,,,,
 0920,6362,9,0,1606,617,,,,,,38
 0722,,2,3,743,,,,,,,
 0721,,5,0,552,,,,,,,
-0924,,,,,,5,14,,,1,`;
+0924,6374,8,0,5566,6229,5,16,,,1,124
+0926,6388,,,13280,10212,17,34,877,,3,51
+0925,6384,11,3,9947,9206,7,445,1126,,12,473`;
 
 const FB_RAW=`0908,3021,1,,7302,,,,,,118,
 0816,2987,1,,170,,,,,,44,
@@ -1464,7 +1466,9 @@ const FB_RAW=`0908,3021,1,,7302,,,,,,118,
 0722,2969,1,,322,,,,,,28,
 0703,2861,1,1,231,,,,,,10,
 0721,2969,7,,32846,,,,,,38,
-0924,,1,0,20294,4,11,,3,2,,307`;
+0924,3052,1,0,20327,4,16,,5,3,52,686
+0926,3053,1,0,48032,7,,,,,51,
+0925,3053,1,0,34250,4,10,211,,,26,`;
 
 const LI_RAW=`0908,1180,1,643,46,18,2,12
 0816,1110,1,144,37,2,1,1
@@ -1555,7 +1559,10 @@ const LI_RAW=`0908,1180,1,643,46,18,2,12
 0901,1162,3,520,25,21,1,4
 0626,935,7,131,22,2,,1
 0703,960,10,159,23,3,,5
-0824,1146,0,91,3,9,,`;
+0824,1146,0,91,3,9,,
+0926,1237,5,1192,359,50,2,1
+0925,1232,1,567,66,24,,3
+0924,1231,9,225,22,10,,3`;
 
 const YT_RAW=`0908,40,0,0
 0907,8,0,0
@@ -1640,7 +1647,9 @@ const YT_RAW=`0908,40,0,0
 0831,6,0,0
 0824,14,0,0
 0721,13,0,0
-0922,13,0,0`;
+0922,13,0,0
+0925,8,0,0
+0924,18,0,0`;
 const CURRENT = { ig:6366, fb:3053, li:1222, yt:231 };
 
 const POSTS_RAW=`ig|0921|Reel|Join the crew that's been painting Canada since 1933|https://www.instagram.com/reel/Ddj4hXkB40k/|1150|676|269|257|4|2|6||11.5
@@ -1756,10 +1765,15 @@ li|0706|Image|Summer exterior products|https://www.linkedin.com/feed/update/urn:
 li|0701|Video|Video post, Jul 1|https://www.linkedin.com/feed/update/urn:li:ugcPost:7478101427353976834|318|827|30|27|0||3|47|
 li|0629|Multi-image|Cool roof: simplest way to tackle heat|https://www.linkedin.com/feed/update/urn:li:ugcPost:7474864878004948992|248|248|2|2|0||0|25|
 yt|0806|Video|The True North of Industrial Coatings|https://www.youtube.com/watch?v=DCjevqqpILY|25||1|1|0||0||90
-ig|0924|Image|Save 30% on Guardian, Sept 24 - Oct 4 (reminder)|https://www.instagram.com/p/DdrQ_CjHyJa/|142|86|7|6|0|0|1||
-ig|0924|Image|Fan Club Saturday at White Rock|https://www.instagram.com/p/DdrQ8RbDj1p/|206|128|7|6|1|0|||
-fb|0924|Photo|Save 30% on Guardian, Sept 24 - Oct 4 (reminder)|https://facebook.com/1347481163999576/posts/1718878703526485|158|111|5|3|0||2|0|
-fb|0924|Photo|Fan Club Saturday at White Rock|https://facebook.com/1347481163999576/posts/1718878530193169|149|100|3|3|0||0|0|`;
+ig|0924|Image|Save 30% on Guardian, Sept 24 - Oct 4 (reminder)|https://www.instagram.com/p/DdrQ_CjHyJa/|237|137|8|7|0|0|1||
+ig|0924|Image|Fan Club Saturday at White Rock|https://www.instagram.com/p/DdrQ8RbDj1p/|288|167|8|7|1|0|||
+fb|0924|Photo|Save 30% on Guardian, Sept 24 - Oct 4 (reminder)|https://facebook.com/1347481163999576/posts/1718878703526485|440|268|7|4|0||3|0|
+fb|0924|Photo|Fan Club Saturday at White Rock|https://facebook.com/1347481163999576/posts/1718878530193169|246|163|4|4|0||0|0|
+ig|0926|Reel|Welcome home. Our Calliope Color of the Year comes to life on…|https://www.instagram.com/reel/DdwalYmzyx7/|877|540|34|25|4|2|3||5.8
+ig|0925|Reel|Introducing Calliope, our 2027 Colour of the Year (Instagram)|https://www.instagram.com/reel/Ddt1sXpBaU-/|1126|687|445|428|3|2|12||15.4
+fb|0925|Reel|Introducing Calliope, our 2027 Colour of the Year (Facebook)|https://www.facebook.com/reel/1403615371913855/|211||6|6|||||11
+li|0926|Multi-image|Cloverdale Paint at The Colour Edit Trends 2027|https://www.linkedin.com/feed/update/urn:li:ugcPost:7509448839846813697|710|710|36|31|2||3|468|
+li|0925|Image|The Colour Edit Trends 2027: Cloverdale at IDS Vancouver|https://www.linkedin.com/feed/update/urn:li:share:7509275730162405376|1512|1512|54|50|1||3|184|`;
 
 const IG_CITIES=[["Calgary, AB",7.06],["Edmonton, AB",4.73],["Surrey, BC",4.09],["Winnipeg, MB",3.66],["Vancouver, BC",2.97],["Saskatoon, SK",2.68],["Toronto, ON",1.97],["Victoria, BC",1.86],["Langley, BC",1.51],["Regina, SK",1.26]];
 const IG_AGE=[["13-17",1,3,4],["18-24",42,60,65],["25-34",352,420,414],["35-44",804,728,527],["45-54",628,439,297],["55-64",483,195,186],["65+",261,114,144]]; // F,M,U
@@ -2003,7 +2017,7 @@ const ICO={
 };
 
 /* dates + data */
-const DAY=864e5, START=new Date(2026,5,26), END=new Date(2026,8,24), DAYS=Math.round((END-START)/DAY)+1;
+const DAY=864e5, START=new Date(2026,5,26), END=new Date(2026,8,26), DAYS=Math.round((END-START)/DAY)+1;
 const dateAt=i=>new Date(START.getTime()+i*DAY);
 const idxOf=mmdd=>Math.round((new Date(2026,+mmdd.slice(0,2)-1,+mmdd.slice(2))-START)/DAY);
 const idxDate=d=>Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-START)/DAY);
@@ -2874,7 +2888,7 @@ function buckets(k,R){ const d=dailySeen(k,R.s,R.e); const n=d.length; if(n<=16)
 function rpBars(bs,color){ const mx=Math.max(1,...bs.map(b=>b.v)); const every=bs.length>10?2:1;
   return `<div class="rp-bars" style="--n:${bs.length}">${bs.map((b,i)=>`<div class="rp-bar"><span class="v">${b.v?fmt(b.v):'0'}</span><i style="height:${Math.max(b.v?2:0,b.v/mx*100)}%;background:${color};${b.part?'opacity:.55':''}"></i><span class="xl">${i%every===0||i===bs.length-1?b.l:''}</span></div>`).join('')}</div>`; }
 function rpHead(R){ return `<header class="rp-hd"><img class="rp-logo" src="${LOGO}" alt="Cloverdale Paint"><div class="rp-hr"><span>Social media report</span><b>${dShort(R.from)} – ${dShort(R.to)}, ${R.to.getFullYear()}</b></div></header><div class="rp-spec"></div>`; }
-function rpFoot(i,N){ return `<footer class="rp-ft"><span>Cloverdale Paint · Prepared by TJ · Figures from TJ's server, synced ${dLong(new Date(2026,8,25))}</span><span>Page ${i} of ${N}</span></footer>`; }
+function rpFoot(i,N){ return `<footer class="rp-ft"><span>Cloverdale Paint · Prepared by TJ · Figures from TJ's server, synced ${dLong(new Date(2026,8,28))}</span><span>Page ${i} of ${N}</span></footer>`; }
 const rgba=(hx,a)=>{ const v=parseInt(hx.slice(1),16); return `rgba(${v>>16&255},${v>>8&255},${v&255},${a})`; };
 function tile(icon,color,big,label,c,extra){ return `<div class="rp-tile"><div class="rp-ti" style="background:${rgba(color,.09)};color:${color}">${icoImg(icon,color,22)}</div><div class="rp-big">${big}</div><div class="rp-lbl">${label}</div>${c?badge(c):''}<p class="rp-exp">${c?c.text:''}${extra?' '+extra:''}</p></div>`; }
 
@@ -2974,7 +2988,7 @@ function reportPages(R,chs,note){
       <div class="rp-c2"><div><h3>Share of all reactions</h3><p class="rp-exp">Who got the most attention in total.</p>${bars(sh,'share',smx)}</div><div><h3>Reactions per follower</h3><p class="rp-exp">Who got the strongest response for their size.</p>${bars(rt,'rate',rmx)}</div></div>
       <p class="rp-exp">On this page, reactions means the likes, comments and shares anyone can see on a public page. Per follower divides each post's reactions by the brand's followers that day.</p></div>`; })():`<div class="rp-title"><div class="rp-eyebrow">Reference</div><h1>Words used in this report</h1></div>`}
     <div class="rp-card rp-gloss"><div class="rp-ch2"><h2>${icoImg('book','#15171A',18)}${hasComp?'Words used in this report':'What each word means'}</h2></div><dl>${gloss.map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('')}</dl></div>
-    <div class="rp-about"><b>About these numbers</b><p>Figures come from the official Instagram, Facebook, LinkedIn and YouTube statistics, collected on TJ's server.${hasComp?' Other brands’ numbers are the public counts on their pages.':''} Instagram follower counts before September 13 are estimated from daily gains and losses. ${R.to.getTime()===END.getTime()?'September 24 was still in progress when the data was collected.':''}</p></div>
+    <div class="rp-about"><b>About these numbers</b><p>Figures come from the official Instagram, Facebook, LinkedIn and YouTube statistics, collected on TJ's server.${hasComp?' Other brands’ numbers are the public counts on their pages.':''} Instagram follower counts before September 13 are estimated from daily gains and losses. ${R.to.getTime()===END.getTime()?'September 26 was still in progress when the data was collected.':''}</p></div>
   </div>`);
   const N=pages.length; return pages.map((h,i)=>`<section class="rp-page">${h}${rpFoot(i+1,N)}</section>`);
 }
@@ -3113,7 +3127,7 @@ function renderAll(){ const M=state.mods; vis('#plats',M.plats); vis('.row2',M.h
   if(M.hero) renderHero(); if(M.gl) renderGL(); if(M.scale) renderScale(); if(M.km) renderRow4(); if(M.posts) renderPosts(); if(M.rail){ renderWeek(); renderCal(); } if(M.geo) renderGeo(); if(M.bench) renderLandscape(); if(M.time) renderHeat();
   if(chatEl){ const sp=$('.chat-h span',chatEl); if(sp) sp.innerHTML='<i></i>Cloverdale Paint · '+PL[state.period]; }
   if($('.drawer',layer)&&drawerCh&&!$('#pb',layer)&&!$('#px',layer)) renderDrawer(); }
-$('#footSrc').textContent=`Source: TJ's server, synced September 25, 2026. Data covers ${dShort(START)} to ${dShort(END)}, 2026; Sep 24 is a partial day. Instagram follower counts are exact from Sep 13, and earlier days are rebuilt from daily gains and losses. Competitor numbers are public page data, updated daily. Platform logos belong to their owners.`;
+$('#footSrc').textContent=`Source: TJ's server, synced September 28, 2026. Data covers ${dShort(START)} to ${dShort(END)}, 2026; Sep 26 is a partial day. Instagram follower counts are exact from Sep 13, and earlier days are rebuilt from daily gains and losses. Competitor numbers are public page data, updated daily. Platform logos belong to their owners.`;
 let rt, lw=innerWidth; addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(Math.abs(innerWidth-lw)<40) return; lw=innerWidth; if(state.mods.gl) renderGL(); if(state.mods.geo) drawMap(state.geoView,state.geoNet,[]); $$('.seg').forEach(segPill); $$('.tabs').forEach(tabInk); },180); });
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ $$('.seg').forEach(segPill); $$('.tabs').forEach(tabInk); });
 renderAll();
