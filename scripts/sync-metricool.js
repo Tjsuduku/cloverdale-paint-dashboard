@@ -59,6 +59,7 @@ function toRows(posts) {
     if (!iso) continue;
     const type = (p.instagramData && p.instagramData.type) || (p.facebookData && p.facebookData.type) || 'POST';
     const caption = (p.text || '').trim() || `[${type.toLowerCase()}]`;
+    const media = Array.isArray(p.media) ? p.media.filter((u) => typeof u === 'string' && u) : [];
     for (const pr of p.providers || []) {
       const network = (pr.network || '').toLowerCase();
       if (!network) continue;
@@ -72,6 +73,7 @@ function toRows(posts) {
         publication_date: iso,
         status,
         public_url: pr.publicUrl || null,
+        media,
         synced_at: syncedAt,
       });
     }
