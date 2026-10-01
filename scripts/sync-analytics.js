@@ -9,16 +9,20 @@ const E = process.env;
 const DAYS_BACK = 120;
 const TZ = 'America/Vancouver';
 
-// [platform, stored metric, Metricool metric name]
+// [platform, stored metric, [Metricool v2 metric names to try, first that works wins]]
 const METRICS = [
-  ['instagram', 'followers', 'followers'], ['instagram', 'reach', 'reach'], ['instagram', 'interactions', 'interactions'],
-  ['instagram', 'posts', 'postsCount'], ['instagram', 'gained', 'followersGained'], ['instagram', 'lost', 'followersLost'],
-  ['facebook', 'followers', 'fbFollowers'], ['facebook', 'reach', 'reach'], ['facebook', 'interactions', 'interactions'],
-  ['facebook', 'posts', 'postsCount'], ['facebook', 'gained', 'followersAcquired'], ['facebook', 'lost', 'followersLost'],
-  ['linkedin', 'followers', 'followers'], ['linkedin', 'reach', 'accountPostImpressions'], ['linkedin', 'interactions', 'accountPostInteractions'],
-  ['linkedin', 'posts', 'accountPostCount'], ['linkedin', 'net', 'deltaFollowers'],
-  ['youtube', 'followers', 'subscribers'], ['youtube', 'reach', 'videoViews'], ['youtube', 'posts', 'videos'],
-  ['youtube', 'gained', 'gained'], ['youtube', 'lost', 'lost'],
+  ['instagram', 'followers', ['followers']], ['instagram', 'reach', ['reach']], ['instagram', 'views', ['views']],
+  ['instagram', 'interactions', ['postsInteractions']], ['instagram', 'posts', ['postsCount']],
+  ['instagram', 'gained', ['followers_gained']], ['instagram', 'lost', ['followers_lost']],
+  ['facebook', 'followers', ['pageFollows']], ['facebook', 'views', ['page_media_view']], ['facebook', 'impressions', ['pageImpressions']],
+  ['facebook', 'interactions', ['postsInteractions']], ['facebook', 'posts', ['postsCount']],
+  ['facebook', 'gained', ['page_daily_follows_unique', 'Follows']], ['facebook', 'lost', ['page_daily_unfollows_unique', 'Unfollows']],
+  ['linkedin', 'followers', ['followers']], ['linkedin', 'net', ['delta_followers', 'deltaFollowers']],
+  ['linkedin', 'reach', ['impressions', 'postsImpressions', 'accountPostImpressions', 'views']],
+  ['linkedin', 'interactions', ['postsInteractions', 'interactions', 'accountPostInteractions']],
+  ['linkedin', 'posts', ['postsCount', 'posts', 'accountPostCount']],
+  ['youtube', 'followers', ['totalSubscribers']], ['youtube', 'views', ['views']], ['youtube', 'posts', ['totalVideos']],
+  ['youtube', 'gained', ['subscribersGained']], ['youtube', 'lost', ['subscribersLost']],
 ];
 
 const pad = (n) => String(n).padStart(2, '0');
@@ -60,11 +64,6 @@ async function timeline(network, metric, from, to) {
   const q = new URLSearchParams({ blogId: E.METRICOOL_BRAND_ID, userId: E.METRICOOL_USER_ID, from: `${iso(from)}T00:00:00`, to: `${iso(to)}T23:59:59`, timezone: TZ, metric, subject: 'account', network });
   let r = await get(`${base}?${q}`);
   if (r.ok) return r;
-  if (network === 'youtube') { // MCP uses the v1 timeline endpoint for YouTube account metrics
-    const q1 = new URLSearchParams({ start: yyyymmdd(from), end: yyyymmdd(to), timezone: TZ, userId: E.METRICOOL_USER_ID, blogId: E.METRICOOL_BRAND_ID });
-    r = await get(`https://app.metricool.com/api/stats/timeline/${metric}?${q1}`);
-  }
-  if (!r.ok) console.log(`  yt v1 fallback status ${r.status}: ${r.body.slice(0, 300)}`);
   return r;
 }
 
@@ -79,26 +78,27 @@ async function upsert(rows) {
 
 (async () => {
   const now = new Date();
-  // PROBE: print each network's valid metric names (invalid name on purpose)
-  for (const nw of ['instagram', 'facebook', 'linkedin', 'youtube']) {
-    const pr = await get(`https://app.metricool.com/api/v2/analytics/timelines?${new URLSearchParams({ blogId: E.METRICOOL_BRAND_ID, userId: E.METRICOOL_USER_ID, from: '2026-09-28T00:00:00', to: '2026-09-30T23:59:59', timezone: TZ, metric: 'zzz', subject: 'account', network: nw })}`);
-    console.log(`PROBE ${nw}: HTTP ${pr.status} ${pr.body.slice(0, 3000)}`);
-  }
   const from = new Date(now.getTime() - DAYS_BACK * 864e5);
   const syncedAt = now.toISOString();
   const rows = [];
   let failures = 0;
-  for (const [platform, metric, name] of METRICS) {
-    try {
-      const r = await timeline(platform, name, from, now);
-      if (!r.ok) { failures++; console.log(`FAIL ${platform}/${metric} (${name}): HTTP ${r.status} ${r.body.slice(0, 3000)}`); continue; }
-      let json; try { json = JSON.parse(r.body); } catch { failures++; console.log(`FAIL ${platform}/${metric}: non-JSON ${r.body.slice(0, 200)}`); continue; }
-      const pts = extract(json);
-      const dates = pts.map((p) => normDate(p[0])).sort();
-      console.log(`${platform}/${metric} (${name}): ${pts.length} points ${dates[0] || ''}..${dates[dates.length - 1] || ''} last=${pts.length ? pts[pts.length - 1][1] : ''}`);
-      if (!pts.length) console.log(`  raw: ${r.body.slice(0, 400)}`);
-      for (const [d, v] of pts) rows.push({ platform, metric, metric_label: name, date: normDate(d), value: Number(v), synced_at: syncedAt });
-    } catch (e) { failures++; console.log(`ERROR ${platform}/${metric}: ${e.message}`); }
+  for (const [platform, metric, names] of METRICS) {
+    let done = false;
+    for (const name of names) {
+      try {
+        const r = await timeline(platform, name, from, now);
+        if (!r.ok) { console.log(`  skip ${platform}/${metric} (${name}): HTTP ${r.status} ${r.body.slice(0, 160)}`); continue; }
+        let json; try { json = JSON.parse(r.body); } catch { console.log(`  skip ${platform}/${metric} (${name}): non-JSON`); continue; }
+        const pts = extract(json);
+        if (!pts.length) { console.log(`  skip ${platform}/${metric} (${name}): no points, raw ${r.body.slice(0, 200)}`); continue; }
+        const byDate = pts.map((p) => [normDate(p[0]), Number(p[1])]).sort((x, y) => (x[0] < y[0] ? -1 : 1));
+        console.log(`${platform}/${metric} (${name}): ${pts.length} points ${byDate[0][0]}..${byDate[byDate.length - 1][0]} latest=${JSON.stringify(byDate.slice(-3))}`);
+        for (const [d, v] of byDate) rows.push({ platform, metric, metric_label: name, date: d, value: v, synced_at: syncedAt });
+        done = true;
+        break;
+      } catch (e) { console.log(`  error ${platform}/${metric} (${name}): ${e.message}`); }
+    }
+    if (!done) { failures++; console.log(`FAIL ${platform}/${metric}: no working metric name`); }
   }
   // de-duplicate on the conflict key (a response can repeat a date)
   const seen = new Map();
