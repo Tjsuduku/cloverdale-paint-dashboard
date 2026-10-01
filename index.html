@@ -1208,6 +1208,43 @@ body.locked .app,body.locked .fab{visibility:hidden}
   .nx table.t th,.nx table.t td{padding:10px 12px}
 }
 
+
+.cal-wrap{display:flex;flex-direction:column;gap:16px}
+.cal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.cal-pills{display:flex;gap:6px;background:var(--surface-2);padding:4px;border-radius:10px}
+.cal-pill{border:0;background:none;padding:7px 14px;border-radius:7px;font-size:12.5px;font-weight:600;font-family:var(--f);color:var(--muted);cursor:pointer;transition:background .18s,color .18s}
+.cal-pill.on{background:var(--surface);color:var(--ink);box-shadow:var(--lift)}
+@media (hover:hover) and (pointer:fine){.cal-pill:not(.on):hover{color:var(--ink-2)}}
+.cal-nav{display:flex;align-items:center;gap:6px}
+.cal-range{font-size:13px;font-weight:600;color:var(--ink-2);min-width:150px;text-align:center}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+.cal-day{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px;min-height:120px;display:flex;flex-direction:column;gap:8px}
+.cal-day.is-today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.cal-day-h{display:flex;align-items:center;justify-content:space-between;font-family:var(--f)}
+.cal-day-h span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.cal-day-h b{font-size:15px;font-weight:650}
+.cal-day.is-today .cal-day-h b{color:var(--accent)}
+.cal-cards{display:flex;flex-direction:column;gap:8px}
+.cal-none{font-size:12px;color:var(--faint);padding:6px 2px}
+.cal-card{border:1px solid var(--line-2);border-radius:10px;overflow:hidden;cursor:pointer;background:var(--surface);transition:transform .18s,box-shadow .18s}
+@media (hover:hover) and (pointer:fine){.cal-card:hover{transform:translateY(-2px);box-shadow:var(--lift)}}
+.cal-thumb{position:relative;aspect-ratio:1/1;background:var(--surface-2);overflow:hidden}
+.cal-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.cal-ph{width:100%;height:100%;display:grid;place-items:center;color:var(--faint)}
+.cal-ph svg{width:28px;height:28px}
+.cal-badge{position:absolute;top:6px;left:6px;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.cal-badge svg{width:11px;height:11px}
+.cal-meta{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 8px;gap:6px}
+.cal-time{font-size:11px;font-family:var(--fm);color:var(--ink-2);font-weight:600}
+.cal-tag{font-size:10px;font-weight:650;padding:2px 7px;border-radius:99px}
+.cal-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:61;width:min(440px,92vw);max-height:86vh;overflow-y:auto;background:var(--surface);border-radius:18px;box-shadow:var(--pop);animation:rise .3s var(--ease) both}
+.cal-modal img{width:100%;display:block;background:var(--surface-2)}
+.cal-modal-body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px}
+.cal-modal-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cal-modal-cap{font-size:13.5px;line-height:1.5;color:var(--ink-2);white-space:pre-wrap}
+.cal-modal .x{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(18,20,23,.5);color:#fff;display:grid;place-items:center;cursor:pointer}
+@media (max-width:980px){.cal-grid{grid-template-columns:repeat(7,minmax(130px,1fr));overflow-x:auto}}
+@media (max-width:760px){.cal-grid{grid-template-columns:repeat(7,minmax(118px,1fr))}.cal-head{flex-direction:column;align-items:stretch}.cal-nav{justify-content:space-between}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>const SUPABASE_URL="https://fdvvqnwoteksztyqadom.supabase.co";const SUPABASE_ANON_KEY="sb_publishable_xpPRtvK4eITVjBoVS0wYrw_pdoq7nGq";</script>
@@ -3180,27 +3217,105 @@ function renderAll(){ const M=state.mods; vis('#plats',M.plats); vis('.row2',M.h
   if(chatEl){ const sp=$('.chat-h span',chatEl); if(sp) sp.innerHTML='<i></i>Cloverdale Paint · '+PL[state.period]; }
   if($('.drawer',layer)&&drawerCh&&!$('#pb',layer)&&!$('#px',layer)) renderDrawer(); }
 
+let calRows=null, calWeekStart=null, calFilter='all';
+function calStartOfWeek(d){ const x=new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate()-x.getDay()); return x; }
+const CAL_ICO={
+  fb:'<svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.6 5.6H9.2V4.4c0-.6.1-.9.9-.9h.9V1.2C10.6 1.1 9.9 1 9.1 1 7.1 1 6 2.2 6 4.1v1.5H4.4V8H6v7h3.1V8h1.9l.3-2.4z"/></svg>',
+  ig:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="1.5" width="13" height="13" rx="3.6"/><circle cx="8" cy="8" r="3"/><circle cx="12" cy="4" r="0.7" fill="currentColor" stroke="none"/></svg>',
+  left:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3L5 8l5 5"/></svg>',
+  right:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3l5 5-5 5"/></svg>'
+};
+const CAL_STV={published:['Published','#178757','#DFF2E8'],scheduled:['Scheduled','#5d7ddc','#E7EBFB'],draft:['Draft','#9aa0a6','#EEF0F1']};
+const CAL_PLAT={facebook:['Facebook','#1877F2'],instagram:['Instagram','#9B37B8']};
+
 async function renderCalendar(){
   const root=$('#calListRoot'); if(!root) return;
   if(!window.CP||!window.CP.sb){ root.innerHTML='<p class="muted">Sign in to see the content calendar.</p>'; return; }
-  root.innerHTML='<p class="muted">Loading…</p>';
-  try{
-    const r=await window.CP.sb.from('content_calendar').select('*').order('publication_date',{ascending:false}).limit(60);
-    if(r.error) throw r.error;
-    const rows=r.data||[];
-    if(!rows.length){ root.innerHTML='<p class="muted">No scheduled or published posts yet.</p>'; return; }
-    const STV={published:['Published','#2e9e4f'],scheduled:['Scheduled','#5d7ddc'],draft:['Draft','#9aa0a6']};
-    root.innerHTML='<div class="tbl-wrap"><table class="t nx-tbl"><thead><tr><th>Post</th><th>Platform</th><th>Status</th><th>Date</th><th>Time</th><th></th></tr></thead><tbody>'+
-      rows.map(p=>{
-        const d=new Date(p.publication_date);
-        const dateStr=isNaN(d)?'—':d.toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'});
-        const timeStr=isNaN(d)?'—':d.toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit'});
-        const st=STV[p.status]||STV.scheduled;
-        const name=(p.caption||'').trim()?(p.caption.length>70?p.caption.slice(0,70)+'…':p.caption):'(no caption)';
-        const link=p.public_url?`<a href="${p.public_url}" target="_blank" rel="noopener">View</a>`:'';
-        return `<tr><td class="nm">${esc(name)}</td><td><span class="nx-plat">${esc((p.platform||'').toUpperCase())}</span></td><td><span class="nx-st${p.status==='published'?' on':''}" style="--c:${st[1]}"><i></i>${st[0]}</span></td><td>${dateStr}</td><td>${timeStr}</td><td>${link}</td></tr>`;
-      }).join('')+'</tbody></table></div>';
-  }catch(e){ root.innerHTML='<p class="muted">Could not load the content calendar.</p>'; }
+  if(calRows===null){
+    root.innerHTML='<p class="muted">Loading…</p>';
+    try{
+      const r=await window.CP.sb.from('content_calendar').select('*').order('publication_date',{ascending:true}).limit(1000);
+      if(r.error) throw r.error;
+      calRows=r.data||[];
+    }catch(e){ root.innerHTML='<p class="muted">Could not load the content calendar.</p>'; return; }
+  }
+  if(!calWeekStart) calWeekStart=calStartOfWeek(new Date());
+  paintCalendar(root);
+}
+
+function calCardHtml(p){
+  const d=new Date(p.publication_date);
+  const timeStr=isNaN(d)?'—':d.toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit'});
+  const st=CAL_STV[p.status]||CAL_STV.scheduled;
+  const plat=CAL_PLAT[p.platform]||[(p.platform||'').toUpperCase(),'#7E838A'];
+  const icoKey=p.platform==='instagram'?'ig':'fb';
+  const img=(Array.isArray(p.media)&&p.media[0])?p.media[0]:null;
+  const thumb=img?`<img src="${esc(img)}" alt="" loading="lazy">`:`<div class="cal-ph">${CAL_ICO[icoKey]}</div>`;
+  return `<div class="cal-card" data-id="${esc(p.external_id)}">
+    <div class="cal-thumb">${thumb}<span class="cal-badge" style="--c:${plat[1]}">${CAL_ICO[icoKey]}</span></div>
+    <div class="cal-meta"><span class="cal-time">${timeStr}</span><span class="cal-tag" style="background:${st[2]};color:${st[1]}">${st[0]}</span></div>
+  </div>`;
+}
+
+function paintCalendar(root){
+  const rows=(calRows||[]).filter(p=>calFilter==='all'||p.platform===calFilter);
+  const days=[]; for(let i=0;i<7;i++){ const d=new Date(calWeekStart); d.setDate(d.getDate()+i); days.push(d); }
+  const byDay=new Map(); days.forEach(d=>byDay.set(d.toDateString(),[]));
+  rows.forEach(p=>{
+    const d=new Date(p.publication_date); if(isNaN(d)) return;
+    const key=new Date(d.getFullYear(),d.getMonth(),d.getDate()).toDateString();
+    if(byDay.has(key)) byDay.get(key).push(p);
+  });
+  byDay.forEach(list=>list.sort((a,b)=>new Date(a.publication_date)-new Date(b.publication_date)));
+  const today=new Date().toDateString();
+  const rangeLabel=`${days[0].toLocaleDateString('en-CA',{month:'short',day:'numeric'})} – ${days[6].toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'})}`;
+  const pillsHtml=['all','facebook','instagram'].map(k=>{
+    const label=k==='all'?'All':CAL_PLAT[k][0];
+    return `<button class="cal-pill${calFilter===k?' on':''}" data-f="${k}">${label}</button>`;
+  }).join('');
+  const dayCols=days.map(d=>{
+    const key=d.toDateString(); const list=byDay.get(key)||[];
+    const cards=list.length?list.map(calCardHtml).join(''):'<div class="cal-none">No posts</div>';
+    return `<div class="cal-day${key===today?' is-today':''}">
+      <div class="cal-day-h"><span>${d.toLocaleDateString('en-CA',{weekday:'short'})}</span><b>${d.getDate()}</b></div>
+      <div class="cal-cards">${cards}</div>
+    </div>`;
+  }).join('');
+  root.innerHTML=`<div class="cal-wrap">
+    <div class="cal-head">
+      <div class="cal-pills">${pillsHtml}</div>
+      <div class="cal-nav"><button class="iconb" id="calPrev" aria-label="Previous week">${CAL_ICO.left}</button><span class="cal-range">${rangeLabel}</span><button class="iconb" id="calNext" aria-label="Next week">${CAL_ICO.right}</button><button class="btn sm" id="calToday">Today</button></div>
+    </div>
+    <div class="cal-grid">${dayCols}</div>
+  </div>`;
+  $$('.cal-pill',root).forEach(b=>b.onclick=()=>{ calFilter=b.dataset.f; paintCalendar(root); });
+  $('#calPrev',root).onclick=()=>{ calWeekStart.setDate(calWeekStart.getDate()-7); paintCalendar(root); };
+  $('#calNext',root).onclick=()=>{ calWeekStart.setDate(calWeekStart.getDate()+7); paintCalendar(root); };
+  $('#calToday',root).onclick=()=>{ calWeekStart=calStartOfWeek(new Date()); paintCalendar(root); };
+  $$('.cal-card',root).forEach(c=>c.onclick=()=>openCalModal(c.dataset.id));
+}
+
+function openCalModal(id){
+  const p=(calRows||[]).find(x=>x.external_id===id); if(!p) return;
+  const d=new Date(p.publication_date);
+  const dateStr=isNaN(d)?'—':d.toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'});
+  const timeStr=isNaN(d)?'—':d.toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit'});
+  const st=CAL_STV[p.status]||CAL_STV.scheduled;
+  const plat=CAL_PLAT[p.platform]||[(p.platform||'').toUpperCase(),'#7E838A'];
+  const img=(Array.isArray(p.media)&&p.media[0])?p.media[0]:null;
+  const link=p.public_url?`<a class="btn sm" href="${p.public_url}" target="_blank" rel="noopener">View post ${ICO.ext}</a>`:'';
+  const node=h('div',{class:'cal-modal',role:'dialog','aria-modal':'true'},
+    (img?`<img src="${esc(img)}" alt="">`:'')+
+    `<button class="x" id="calModalX" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+    <div class="cal-modal-body">
+      <div class="cal-modal-top"><span class="nx-plat">${esc(plat[0])}</span><span class="cal-tag" style="background:${st[2]};color:${st[1]}">${st[0]}</span></div>
+      <div class="cal-modal-cap">${esc(p.caption||'(no caption)')}</div>
+      <div class="muted" style="font-size:12.5px">${dateStr} · ${timeStr}</div>
+      ${link}
+    </div>`
+  );
+  openShell(node);
+  $('#calModalX',node).onclick=closeLayer;
 }
 
 window.CP_applyRole=function(role,email){
