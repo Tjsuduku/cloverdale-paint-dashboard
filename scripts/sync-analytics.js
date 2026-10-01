@@ -64,6 +64,7 @@ async function timeline(network, metric, from, to) {
     const q1 = new URLSearchParams({ start: yyyymmdd(from), end: yyyymmdd(to), timezone: TZ, userId: E.METRICOOL_USER_ID, blogId: E.METRICOOL_BRAND_ID });
     r = await get(`https://app.metricool.com/api/stats/timeline/${metric}?${q1}`);
   }
+  if (!r.ok) console.log(`  yt v1 fallback status ${r.status}: ${r.body.slice(0, 300)}`);
   return r;
 }
 
@@ -78,6 +79,11 @@ async function upsert(rows) {
 
 (async () => {
   const now = new Date();
+  // PROBE: print each network's valid metric names (invalid name on purpose)
+  for (const nw of ['instagram', 'facebook', 'linkedin', 'youtube']) {
+    const pr = await get(`https://app.metricool.com/api/v2/analytics/timelines?${new URLSearchParams({ blogId: E.METRICOOL_BRAND_ID, userId: E.METRICOOL_USER_ID, from: '2026-09-28T00:00:00', to: '2026-09-30T23:59:59', timezone: TZ, metric: 'zzz', subject: 'account', network: nw })}`);
+    console.log(`PROBE ${nw}: HTTP ${pr.status} ${pr.body.slice(0, 3000)}`);
+  }
   const from = new Date(now.getTime() - DAYS_BACK * 864e5);
   const syncedAt = now.toISOString();
   const rows = [];
@@ -85,7 +91,7 @@ async function upsert(rows) {
   for (const [platform, metric, name] of METRICS) {
     try {
       const r = await timeline(platform, name, from, now);
-      if (!r.ok) { failures++; console.log(`FAIL ${platform}/${metric} (${name}): HTTP ${r.status} ${r.body.slice(0, 300)}`); continue; }
+      if (!r.ok) { failures++; console.log(`FAIL ${platform}/${metric} (${name}): HTTP ${r.status} ${r.body.slice(0, 3000)}`); continue; }
       let json; try { json = JSON.parse(r.body); } catch { failures++; console.log(`FAIL ${platform}/${metric}: non-JSON ${r.body.slice(0, 200)}`); continue; }
       const pts = extract(json);
       const dates = pts.map((p) => normDate(p[0])).sort();
