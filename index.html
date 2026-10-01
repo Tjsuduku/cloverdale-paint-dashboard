@@ -1237,7 +1237,7 @@ body.locked .app,body.locked .fab{visibility:hidden}
 .cal-meta{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 8px;gap:6px}
 .cal-time{font-size:11px;font-family:var(--fm);color:var(--ink-2);font-weight:600}
 .cal-tag{font-size:10px;font-weight:650;padding:2px 7px;border-radius:99px}
-.cal-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:61;width:min(440px,92vw);max-height:86vh;overflow-y:auto;background:var(--surface);border-radius:18px;box-shadow:var(--pop);animation:rise .3s var(--ease) both}
+.cal-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:66;width:min(440px,92vw);max-height:86vh;overflow-y:auto;background:var(--surface);border-radius:18px;box-shadow:var(--pop);animation:rise .3s var(--ease) both}
 .cal-modal img{width:100%;display:block;background:var(--surface-2)}
 .cal-modal-body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px}
 .cal-modal-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -1245,6 +1245,18 @@ body.locked .app,body.locked .fab{visibility:hidden}
 .cal-modal .x{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(18,20,23,.5);color:#fff;display:grid;place-items:center;cursor:pointer}
 @media (max-width:980px){.cal-grid{grid-template-columns:repeat(7,minmax(130px,1fr));overflow-x:auto}}
 @media (max-width:760px){.cal-grid{grid-template-columns:repeat(7,minmax(118px,1fr))}.cal-head{flex-direction:column;align-items:stretch}.cal-nav{justify-content:space-between}}
+
+.cal-teaser-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.teaser-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2)}
+.teaser-row svg{width:14px;height:14px;flex:none;color:var(--muted)}
+.t-cap{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.t-time{color:var(--muted);font-family:var(--fm);font-size:11px;flex:none}
+.cal-post-scrim{position:fixed;inset:0;background:var(--scrim);z-index:65;animation:fi .25s var(--ease);backdrop-filter:blur(2px)}
+.cal-big{position:fixed;inset:16px;z-index:60;background:var(--surface);border-radius:20px;box-shadow:var(--pop);display:flex;flex-direction:column;overflow:hidden;animation:rise .3s var(--ease) both}
+.cal-big-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line);flex:none}
+.cal-big-head h2{margin:0;font-size:18px;font-weight:650;letter-spacing:-.01em}
+.cal-big-body{flex:1;overflow-y:auto;padding:22px}
+@media (max-width:760px){.cal-big{inset:0;border-radius:0}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>const SUPABASE_URL="https://fdvvqnwoteksztyqadom.supabase.co";const SUPABASE_ANON_KEY="sb_publishable_xpPRtvK4eITVjBoVS0wYrw_pdoq7nGq";</script>
@@ -2149,19 +2161,26 @@ function renderWeek(){ const n=Math.max(state.period,28); const ps=postsIn(null,
     <div class="fmix"><span class="lab">By format</span>${['Video','Image','Text'].filter(t=>fm[t]).map((t,i)=>`<div class="fr"><span>${t}</span><span class="bar"><i style="width:${fm[t]/fmx*100}%;--c:${t==='Video'?'var(--ink)':'var(--faint)'};animation-delay:${i*80}ms"></i></span><b>${fm[t]}</b></div>`).join('')}</div><div class="fmix"><span class="lab">By channel</span>${SOC.map((k,i)=>`<div class="fr"><span>${CH[k].name}</span><span class="bar"><i style="width:${(fc[k]||0)/fcx*100}%;--c:${cvar(k)};animation-delay:${i*80}ms"></i></span><b>${fc[k]||0}</b></div>`).join('')}</div></div></div>`;
   countUp($('#wkN'),pp.length); }
 
-/* ===== calendar ===== */
-function renderCal(){ const m=state.calM, y=2026; const first=new Date(y,m,1), dim=new Date(y,m+1,0).getDate(); const lead=first.getDay(); const names=['S','M','T','W','T','F','S'];
-  const byDay={}; POSTS.forEach(p=>{ if(p.date.getMonth()===m){ const d=p.date.getDate(); (byDay[d]=byDay[d]||[]).push(p); } });
-  let cells=''; const prevDim=new Date(y,m,0).getDate(); for(let i=0;i<lead;i++) cells+=`<button class="out" disabled><span>${prevDim-lead+1+i}</span><span class="pd"></span></button>`;
-  for(let d=1;d<=dim;d++){ const ps=byDay[d]||[]; const chs=[...new Set(ps.map(p=>p.ch))]; const inR=idxDate(new Date(y,m,d)); const out=inR<0||inR>=DAYS; cells+=`<button data-d="${d}" aria-pressed="${state.calSel===d}" class="${out?'out':''} ${ps.length?'has':''}" aria-label="${first.toLocaleDateString('en-CA',{month:'long'})} ${d}, ${ps.length} posts"><span>${d}</span><span class="pd">${chs.map(c=>`<i style="--c:${cvar(c)}"></i>`).join('')}</span></button>`; }
-  const tail=(7-(lead+dim)%7)%7; for(let i=1;i<=tail;i++) cells+=`<button class="out" disabled><span>${i}</span><span class="pd"></span></button>`;
-  const sel=state.calSel&&byDay[state.calSel]?byDay[state.calSel]:null; const mc=Object.values(byDay).reduce((a,b)=>a+b.length,0);
-  $('#calCard').innerHTML=`<div class="card-h" style="margin-bottom:10px"><div><h3>Publishing calendar</h3><span class="sub">${mc} posts in ${first.toLocaleDateString('en-CA',{month:'long'})}</span></div></div><div class="cal-h"><button id="cPrev" aria-label="Previous month" ${m<=5?'disabled':''}>‹</button><b>${first.toLocaleDateString('en-CA',{month:'long',year:'numeric'})}</b><button id="cNext" aria-label="Next month" ${m>=8?'disabled':''}>›</button></div><div class="cal">${names.map(n=>`<span class="dw">${n}</span>`).join('')}${cells}</div>
-    <div class="daylist">${sel?sel.map(p=>`<button class="dayitem" data-id="${p.id}">${LG[p.ch](18)}<span>${esc(p.title)}</span></button>`).join(''):`<p class="note" style="margin:6px 0 0">Squares under a date show which channels posted. Pick a date to see its posts.</p>`}</div>`;
-  $('#cPrev').onclick=()=>{ state.calM--; state.calSel=null; renderCal(); }; $('#cNext').onclick=()=>{ state.calM++; state.calSel=null; renderCal(); };
-  $$('.cal button[data-d]').forEach(b=>b.onclick=()=>{ const d=+b.dataset.d; state.calSel=state.calSel===d?null:d; renderCal(); });
-  $$('.dayitem').forEach(b=>b.onclick=()=>openPost(POSTS.find(p=>p.id===b.dataset.id))); }
-
+/* ===== content calendar teaser (Timing widget) ===== */
+async function renderCalTeaser(){
+  const root=$('#calCard'); if(!root) return;
+  if(!window.CP||!window.CP.sb){ root.innerHTML='<div class="card-h" style="margin-bottom:10px"><div><h3>Content calendar</h3><span class="sub">Sign in to view</span></div></div>'; return; }
+  await ensureCalRows();
+  if(!calWeekStart) calWeekStart=calStartOfWeek(new Date());
+  const wkEnd=new Date(calWeekStart); wkEnd.setDate(wkEnd.getDate()+7);
+  const upcoming=(calRows||[]).filter(p=>{ const d=new Date(p.publication_date); return d>=calWeekStart && d<wkEnd; }).sort((a,b)=>new Date(a.publication_date)-new Date(b.publication_date));
+  const next3=upcoming.slice(0,3);
+  const listHtml = next3.length ? next3.map(p=>{
+    const d=new Date(p.publication_date);
+    const icoKey=p.platform==='instagram'?'ig':'fb';
+    const timeStr=isNaN(d)?'—':d.toLocaleDateString('en-CA',{weekday:'short'})+' '+d.toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit'});
+    const cap=(p.caption||'').trim()?(p.caption.length>42?p.caption.slice(0,42)+'…':p.caption):'(no caption)';
+    return `<div class="teaser-row">${CAL_ICO[icoKey]}<span class="t-cap">${esc(cap)}</span><span class="t-time">${timeStr}</span></div>`;
+  }).join('') : '<p class="muted" style="font-size:12.5px;margin:4px 0 0">No posts scheduled this week.</p>';
+  root.innerHTML=`<div class="card-h" style="margin-bottom:10px"><div><h3>Content calendar</h3><span class="sub">${upcoming.length} post${upcoming.length===1?'':'s'} this week</span></div><button class="btn sm" id="calTeaserOpen">Open full calendar</button></div>
+    <div class="cal-teaser-list">${listHtml}</div>`;
+  $('#calTeaserOpen', root).onclick=()=>openBigCalendar();
+}
 /* ===== geography ===== */
 const CNAME={CA:'Canada',US:'United States',CN:'China',GB:'United Kingdom',IN:'India',BR:'Brazil',AU:'Australia',NG:'Nigeria',IT:'Italy',MX:'Mexico',PH:'Philippines',JP:'Japan',RU:'Russia',PK:'Pakistan',IE:'Ireland',IR:'Iran',TR:'Türkiye',ZA:'South Africa',AR:'Argentina',DZ:'Algeria',PL:'Poland',CL:'Chile',FR:'France',DE:'Germany',GR:'Greece',LB:'Lebanon',NL:'Netherlands',PA:'Panama',EG:'Egypt',KE:'Kenya',MA:'Morocco',MY:'Malaysia',PT:'Portugal',AE:'UAE',ES:'Spain',GH:'Ghana',ID:'Indonesia',KR:'South Korea',RO:'Romania',VE:'Venezuela',AL:'Albania',CO:'Colombia',EC:'Ecuador',TW:'Taiwan',TZ:'Tanzania',BD:'Bangladesh',PR:'Puerto Rico',HK:'Hong Kong',JO:'Jordan',LY:'Libya',UG:'Uganda',IL:'Israel',IQ:'Iraq',CM:'Cameroon',MW:'Malawi',ZM:'Zambia',TH:'Thailand',VN:'Vietnam',TN:'Tunisia',LK:'Sri Lanka'};
 const NUM={CA:124,US:840,CN:156,GB:826,IN:356,BR:76,AU:36,NG:566,IT:380,MX:484,PH:608,JP:392,RU:643,PK:586,IE:372,IR:364,TR:792,ZA:710,AR:32,DZ:12,PL:616,CL:152,FR:250,DE:276,GR:300,LB:422,NL:528,PA:591,EG:818,KE:404,MA:504,MY:458,PT:620,AE:784,ES:724,GH:288,ID:360,KR:410,RO:642,VE:862,AL:8,CO:170,EC:218,TW:158,TZ:834,BD:50,PR:630,HK:344,JO:400,LY:434,UG:800,IL:376,IQ:368,CM:120,MW:454,ZM:894,TH:764,VN:704,TN:788,LK:144};
@@ -2733,7 +2752,8 @@ $$('.nav[data-ch]').forEach(b=>b.onclick=()=>openChannel(b.dataset.ch));
 const SECS=[['#top','Overview'],['#sec-growth','Growth'],['#sec-reach','Reach'],['#sec-content','Content'],['#sec-geo','Audience'],['#sec-timing','Timing'],['#sec-ga4','Website'],['#sec-ads','Ads'],['#sec-calendar','Calendar'],['#sec-market','Competitors']];
 $('#ptabs').innerHTML=SECS.map(([t,l],i)=>`<button data-go="${t}" aria-current="${i===0}">${l}</button>`).join('');
 const goSec=sel=>{ const t=$(sel); if(!t) return; if(sel==='#top') window.scrollTo({top:0,behavior:RM?'auto':'smooth'}); else t.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'}); };
-$$('[data-go]').forEach(b=>b.onclick=()=>goSec(b.dataset.go));
+$('[data-go]').forEach(b=>b.onclick=()=>goSec(b.dataset.go));
+const __calNavBtn=document.querySelector('.nav[data-go="#sec-calendar"]'); if(__calNavBtn) __calNavBtn.onclick=()=>openBigCalendar();
 $('#navAsk').onclick=()=>openChat(); $('#navReport').onclick=()=>openReport(); $('#navCust').onclick=()=>openCustomize(); $('#reportBtn').onclick=()=>openReport(); $('#pReport').onclick=()=>openReport();
 function setCurrent(sel){ $$('[data-go]').forEach(b=>b.setAttribute('aria-current',String(b.dataset.go===sel))); const pb=$(`#ptabs [data-go="${sel}"]`); if(pb){ const pt=$('#ptabs'); pt.scrollTo({left:pb.offsetLeft-16,behavior:RM?'auto':'smooth'}); } }
 if('IntersectionObserver' in window){ const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting) setCurrent(e.target.id==='sec-overview'?'#top':'#'+e.target.id); }); },{rootMargin:'-40% 0px -55% 0px'}); ['#sec-overview','#sec-growth','#sec-reach','#sec-content','#sec-geo','#sec-timing','#sec-ga4','#sec-ads','#sec-calendar','#sec-market'].forEach(sl=>{ const el=$(sl); el&&io.observe(el); }); }
@@ -3052,7 +3072,7 @@ function answerLocal(raw){ const q=' '+raw.toLowerCase().replace(/[?!,]/g,' ')+'
   if(/\b(help|what can you|how do i use|options)\b/.test(q)) return {text:'I can answer from everything on this dashboard:\n• Full reports for 7, 14, 30 or 90 days, or per channel\n• Followers, views, interactions, clicks and posts for Instagram, Facebook, LinkedIn and YouTube\n• Top posts, reels and videos\n• What went out on a given day (for example "what did we post on Sep 14")\n• Where followers are, down to cities and countries\n• Competitors, best time to post and growth\nTry "monthly report" or "Instagram report for 14 days".'};
   if(k==='ga'){ if(GA4.source!=='live') return {text:"Google Analytics 4 isn't connected to the dashboard yet. The website section shows sample figures, so there are no real sessions or users to report.",go:{label:'Show website section',fn:()=>{ closeChat(); jump('#sec-ga4'); }}}; const P=ga4Period(n), c=P.cur; return {text:`Website, ${pl}: ${fmtInt(c.sessions)} sessions, ${fmtInt(c.users)} users, ${fmtPct(c.engagementRate,1)} engagement rate, ${nxMMSS(c.avgEngagementSeconds)} average engagement time and ${fmtInt(c.conversions)} conversions.`,go:{label:'Show website section',fn:()=>{ closeChat(); jump('#sec-ga4'); }}}; }
   if(/ad spend|budget|campaign|cost per|\bspend\b/.test(q)){ const go={label:'Show ad campaigns',fn:()=>{ closeChat(); jump('#sec-ads'); }}; if(ADS.source!=='live') return {text:"Ad accounts aren't connected to the dashboard yet. The ad campaigns section shows sample figures, so there's no real campaign spend to report. Boosted-post spend on organic posts is $0 for the last 90 days.",go}; const act=ADS.campaigns.filter(c=>c.status==='active'); return {text:`${act.length} active campaign${act.length===1?'':'s'}: $${Math.round(sum(act.map(c=>c.spend))).toLocaleString('en-CA')} spent, ${fmtInt(sum(act.map(c=>c.impressions)))} impressions, ${fmtInt(sum(act.map(c=>c.clicks)))} clicks and ${fmtInt(sum(act.map(c=>c.conversions)))} conversions.`,go}; }
-  const di=findDate(q); if(di!=null){ const ps=POSTS.filter(p=>p.idx===di); return {text: ps.length?`${dLong(dateAt(di))}: ${ps.length} post${ps.length>1?'s':''}\n`+ps.map(p=>`• ${CH[p.ch].name} ${p.type}: "${p.title}"${p.inter!=null?' · '+fmtInt(p.inter)+' interactions':''}${p.views?' · '+fmt(p.views)+' views':''}`).join('\n'):`Nothing was posted on ${dLong(dateAt(di))}.`, go: ps[0]?{label:'Open first post',fn:()=>{ closeChat(); openPost(ps[0]); }}:null, go2:{label:'Show calendar',fn:()=>{ state.calM=dateAt(di).getMonth(); state.calSel=dateAt(di).getDate(); renderCal(); jump('#calCard'); }}, where:'Calendar'}; }
+  const di=findDate(q); if(di!=null){ const ps=POSTS.filter(p=>p.idx===di); return {text: ps.length?`${dLong(dateAt(di))}: ${ps.length} post${ps.length>1?'s':''}\n`+ps.map(p=>`• ${CH[p.ch].name} ${p.type}: "${p.title}"${p.inter!=null?' · '+fmtInt(p.inter)+' interactions':''}${p.views?' · '+fmt(p.views)+' views':''}`).join('\n'):`Nothing was posted on ${dLong(dateAt(di))}.`, go: ps[0]?{label:'Open first post',fn:()=>{ closeChat(); openPost(ps[0]); }}:null, go2:{label:'Show calendar',fn:()=>{ closeChat(); calWeekStart=calStartOfWeek(dateAt(di)); calFilter='all'; openBigCalendar(); }}, where:'Calendar'}; }
   const city=IG_CITY_GEO.find(c=>q.includes(' '+c[0].toLowerCase())); if(city&&!/report/.test(q)) return {text:`${city[0]}, ${city[1]}: ${city[4].toFixed(2)}% of Instagram followers, about ${fmtInt(city[4]/100*CURRENT.ig)} people. It ranks #${IG_CITY_GEO.indexOf(city)+1} of ${IG_CITY_GEO.length} cities and makes up ${(city[4]/provShare[city[1]]*100).toFixed(0)}% of ${PROV[city[1]]}'s followers in the top cities.`, go:{label:'Show on map',fn:()=>{ state.geoView='ca'; renderGeo(); jump('#sec-geo'); setTimeout(()=>{ const tr=$(`#gtb tr[data-i="${IG_CITY_GEO.indexOf(city)}"]`); tr&&tr.click(); },700); }}, where:'Geography'};
   const ctyC=Object.entries(CNAME).find(([c,nm])=>c!=='CA'&&q.includes(' '+nm.toLowerCase())); if(ctyC){ const ig=COUNTRIES.ig.find(x=>x[0]===ctyC[0]), fb=COUNTRIES.fb.find(x=>x[0]===ctyC[0]); return {text:`${ctyC[1]}: ${ig?pct(ig[1])+' of Instagram followers (about '+fmtInt(ig[1]/100*CURRENT.ig)+')':'no Instagram followers reported'}, ${fb?pct(fb[1])+' of Facebook followers':'no Facebook followers reported'}.`, go:{label:'Show on world map',fn:()=>{ state.geoView='world'; renderGeo(); jump('#sec-geo'); }}, where:'Geography'}; }
   if(/report|summary|summarise|summarize|overview|how are we doing|how did we do|performance|recap|update/.test(q)){ if(k&&k!=='ga') return {text:chReport(k,n), go:rep, go2:{label:'Open '+CH[k].name,fn:()=>{ closeChat(); openChannel(k); }}, where:CH[k].name}; return {text:fullReport(n), go:rep, go2:{label:'Show dashboard',fn:()=>jump('#top')}, where:'Whole dashboard'}; }
@@ -3213,32 +3233,46 @@ function renderAll(){ const M=state.mods; vis('#plats',M.plats); vis('.row2',M.h
   full('#glCard','#scaleCard',M.gl,M.scale); full('#sec-posts','#wkCard',M.posts,M.rail); full('#sec-time','#calCard',M.time,M.rail);
   renderPeriod(); renderBell(); renderLede();
   if(M.plats) renderPlats(); else SOC.forEach(k=>{ const nv=$(`[data-nv="${k}"]`); if(nv) nv.textContent=fmtInt(agg(k).followers); });
-  if(M.hero) renderHero(); if(M.gl) renderGL(); if(M.scale) renderScale(); if(M.km) renderRow4(); if(M.posts) renderPosts(); if(M.rail){ renderWeek(); renderCal(); } if(M.geo) renderGeo(); if(M.bench) renderLandscape(); if(M.time) renderHeat(); if(M.ga4) renderGA4(); if(M.ads) renderAds();
+  if(M.hero) renderHero(); if(M.gl) renderGL(); if(M.scale) renderScale(); if(M.km) renderRow4(); if(M.posts) renderPosts(); if(M.rail){ renderWeek(); renderCalTeaser(); } if(M.geo) renderGeo(); if(M.bench) renderLandscape(); if(M.time) renderHeat(); if(M.ga4) renderGA4(); if(M.ads) renderAds();
   if(chatEl){ const sp=$('.chat-h span',chatEl); if(sp) sp.innerHTML='<i></i>Cloverdale Paint · '+PL[state.period]; }
   if($('.drawer',layer)&&drawerCh&&!$('#pb',layer)&&!$('#px',layer)) renderDrawer(); }
 
-let calRows=null, calWeekStart=null, calFilter='all';
+let calRows=null, calWeekStart=null, calFilter='all', calLoadPromise=null, calModalDepth=0;
 function calStartOfWeek(d){ const x=new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate()-x.getDay()); return x; }
 const CAL_ICO={
   fb:'<svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.6 5.6H9.2V4.4c0-.6.1-.9.9-.9h.9V1.2C10.6 1.1 9.9 1 9.1 1 7.1 1 6 2.2 6 4.1v1.5H4.4V8H6v7h3.1V8h1.9l.3-2.4z"/></svg>',
   ig:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="1.5" width="13" height="13" rx="3.6"/><circle cx="8" cy="8" r="3"/><circle cx="12" cy="4" r="0.7" fill="currentColor" stroke="none"/></svg>',
   left:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3L5 8l5 5"/></svg>',
-  right:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3l5 5-5 5"/></svg>'
+  right:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3l5 5-5 5"/></svg>',
+  expand:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2H2v4M10 14h4v-4M2 2l5 5M14 14l-5-5"/></svg>'
 };
 const CAL_STV={published:['Published','#178757','#DFF2E8'],scheduled:['Scheduled','#5d7ddc','#E7EBFB'],draft:['Draft','#9aa0a6','#EEF0F1']};
 const CAL_PLAT={facebook:['Facebook','#1877F2'],instagram:['Instagram','#9B37B8']};
 
-async function renderCalendar(){
-  const root=$('#calListRoot'); if(!root) return;
-  if(!window.CP||!window.CP.sb){ root.innerHTML='<p class="muted">Sign in to see the content calendar.</p>'; return; }
-  if(calRows===null){
-    root.innerHTML='<p class="muted">Loading…</p>';
-    try{
-      const r=await window.CP.sb.from('content_calendar').select('*').order('publication_date',{ascending:true}).limit(1000);
-      if(r.error) throw r.error;
-      calRows=r.data||[];
-    }catch(e){ root.innerHTML='<p class="muted">Could not load the content calendar.</p>'; return; }
+function calPushOverflow(){ calModalDepth++; document.body.style.overflow='hidden'; }
+function calPopOverflow(){ calModalDepth=Math.max(0,calModalDepth-1); if(calModalDepth===0) document.body.style.overflow=''; }
+function calHost(id){ let host=document.getElementById(id); if(!host){ host=document.createElement('div'); host.id=id; document.body.appendChild(host); } return host; }
+
+async function ensureCalRows(){
+  if(calRows!==null) return calRows;
+  if(!calLoadPromise){
+    calLoadPromise=(async()=>{
+      try{
+        const r=await window.CP.sb.from('content_calendar').select('*').order('publication_date',{ascending:true}).limit(1000);
+        if(r.error) throw r.error;
+        calRows=r.data||[];
+      }catch(e){ calRows=[]; }
+      return calRows;
+    })();
   }
+  return calLoadPromise;
+}
+
+async function renderCalendar(root){
+  root = root || $('#calListRoot'); if(!root) return;
+  if(!window.CP||!window.CP.sb){ root.innerHTML='<p class="muted">Sign in to see the content calendar.</p>'; return; }
+  if(calRows===null){ root.innerHTML='<p class="muted">Loading…</p>'; }
+  await ensureCalRows();
   if(!calWeekStart) calWeekStart=calStartOfWeek(new Date());
   paintCalendar(root);
 }
@@ -3255,6 +3289,10 @@ function calCardHtml(p){
     <div class="cal-thumb">${thumb}<span class="cal-badge" style="--c:${plat[1]}">${CAL_ICO[icoKey]}</span></div>
     <div class="cal-meta"><span class="cal-time">${timeStr}</span><span class="cal-tag" style="background:${st[2]};color:${st[1]}">${st[0]}</span></div>
   </div>`;
+}
+
+function paintAllCalendars(){
+  [$('#calListRoot'), document.getElementById('calBigRoot')].forEach(r=>{ if(r) paintCalendar(r); });
 }
 
 function paintCalendar(root){
@@ -3281,18 +3319,20 @@ function paintCalendar(root){
       <div class="cal-cards">${cards}</div>
     </div>`;
   }).join('');
+  const expandBtn = root.id==='calListRoot' ? `<button class="iconb" id="calExpandBtn" aria-label="Open full calendar" title="Open full calendar">${CAL_ICO.expand}</button>` : '';
   root.innerHTML=`<div class="cal-wrap">
     <div class="cal-head">
       <div class="cal-pills">${pillsHtml}</div>
-      <div class="cal-nav"><button class="iconb" id="calPrev" aria-label="Previous week">${CAL_ICO.left}</button><span class="cal-range">${rangeLabel}</span><button class="iconb" id="calNext" aria-label="Next week">${CAL_ICO.right}</button><button class="btn sm" id="calToday">Today</button></div>
+      <div class="cal-nav"><button class="iconb" data-cal-prev aria-label="Previous week">${CAL_ICO.left}</button><span class="cal-range">${rangeLabel}</span><button class="iconb" data-cal-next aria-label="Next week">${CAL_ICO.right}</button><button class="btn sm" data-cal-today>Today</button>${expandBtn}</div>
     </div>
     <div class="cal-grid">${dayCols}</div>
   </div>`;
-  $$('.cal-pill',root).forEach(b=>b.onclick=()=>{ calFilter=b.dataset.f; paintCalendar(root); });
-  $('#calPrev',root).onclick=()=>{ calWeekStart.setDate(calWeekStart.getDate()-7); paintCalendar(root); };
-  $('#calNext',root).onclick=()=>{ calWeekStart.setDate(calWeekStart.getDate()+7); paintCalendar(root); };
-  $('#calToday',root).onclick=()=>{ calWeekStart=calStartOfWeek(new Date()); paintCalendar(root); };
-  $$('.cal-card',root).forEach(c=>c.onclick=()=>openCalModal(c.dataset.id));
+  $('.cal-pill',root).forEach(b=>b.onclick=()=>{ calFilter=b.dataset.f; paintAllCalendars(); });
+  $('[data-cal-prev]',root).onclick=()=>{ calWeekStart.setDate(calWeekStart.getDate()-7); paintAllCalendars(); };
+  $('[data-cal-next]',root).onclick=()=>{ calWeekStart.setDate(calWeekStart.getDate()+7); paintAllCalendars(); };
+  $('[data-cal-today]',root).onclick=()=>{ calWeekStart=calStartOfWeek(new Date()); paintAllCalendars(); };
+  $('.cal-card',root).forEach(c=>c.onclick=()=>openCalModal(c.dataset.id));
+  const expandEl=$('#calExpandBtn',root); if(expandEl) expandEl.onclick=()=>openBigCalendar();
 }
 
 function openCalModal(id){
@@ -3314,9 +3354,37 @@ function openCalModal(id){
       ${link}
     </div>`
   );
-  openShell(node);
-  $('#calModalX',node).onclick=closeLayer;
+  const host=calHost('calPostHost');
+  const sc=h('div',{class:'cal-post-scrim'}); sc.onclick=closeCalModal;
+  host.innerHTML=''; host.append(sc,node);
+  calPushOverflow();
+  node.querySelector('#calModalX').onclick=closeCalModal;
+  document.addEventListener('keydown', calModalEsc);
 }
+function closeCalModal(){
+  const host=document.getElementById('calPostHost');
+  if(host && host.innerHTML){ host.innerHTML=''; calPopOverflow(); }
+  document.removeEventListener('keydown', calModalEsc);
+}
+function calModalEsc(e){ if(e.key==='Escape') closeCalModal(); }
+
+function openBigCalendar(){
+  const host=calHost('calBigHost');
+  const sc=h('div',{class:'scrim'}); sc.onclick=closeBigCalendar;
+  const panel=h('div',{class:'cal-big',role:'dialog','aria-modal':'true','aria-label':'Content calendar'});
+  panel.innerHTML=`<div class="cal-big-head"><h2>Content calendar</h2><button class="iconb" id="calBigX" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div><div class="cal-big-body" id="calBigRoot"></div>`;
+  host.innerHTML=''; host.append(sc,panel);
+  calPushOverflow();
+  panel.querySelector('#calBigX').onclick=closeBigCalendar;
+  document.addEventListener('keydown', calBigEsc);
+  renderCalendar(document.getElementById('calBigRoot'));
+}
+function closeBigCalendar(){
+  const host=document.getElementById('calBigHost');
+  if(host && host.innerHTML){ host.innerHTML=''; calPopOverflow(); }
+  document.removeEventListener('keydown', calBigEsc);
+}
+function calBigEsc(e){ if(e.key==='Escape') closeBigCalendar(); }
 
 window.CP_applyRole=function(role,email){
   if(role!=='admin'){ state.mods.ga4=false; state.mods.ads=false; }
