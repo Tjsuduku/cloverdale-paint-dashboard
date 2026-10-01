@@ -1,153 +1,104 @@
-// Pulls daily social metrics (followers, reach, interactions, posts) from Metricool's
-// analytics timeline API and upserts them into Supabase social_metrics_daily.
+// Pulls daily social metrics from Metricool (v2 analytics timelines API) and upserts them into
+// Supabase social_metrics_daily (platform, metric, date, value). Rewritten Oct 2026: the old
+// /api/stats/timeline/<DataStudio id> call returned a single zero point.
 // Env: METRICOOL_API_TOKEN, METRICOOL_USER_ID, METRICOOL_BRAND_ID, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
-// Node 20, no dependencies.
-
 const need = ['METRICOOL_API_TOKEN', 'METRICOOL_USER_ID', 'METRICOOL_BRAND_ID', 'SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'];
 const missing = need.filter((k) => !process.env[k]);
-if (missing.length) {
-  console.error('Missing env vars: ' + missing.join(', '));
-  process.exit(1);
-}
+if (missing.length) { console.error('Missing env vars: ' + missing.join(', ')); process.exit(1); }
 const E = process.env;
-const DAYS_BACK = 35;
+const DAYS_BACK = 120;
+const TZ = 'America/Vancouver';
 
-// platform -> metric -> Metricool Data Studio field id
+// [platform, stored metric, Metricool metric name]
 const METRICS = [
-  { platform: 'instagram', metric: 'followers', fieldId: 'IGEV01', label: 'Followers' },
-  { platform: 'instagram', metric: 'reach', fieldId: 'IGEV06', label: 'Reach' },
-  { platform: 'instagram', metric: 'interactions', fieldId: 'IGEV09', label: 'Interactions' },
-  { platform: 'instagram', metric: 'posts', fieldId: 'IGEV37', label: 'Posts' },
-
-  { platform: 'facebook', metric: 'followers', fieldId: 'FBEV17', label: 'Followers' },
-  { platform: 'facebook', metric: 'reach', fieldId: 'FBEV11', label: 'Reach' },
-  { platform: 'facebook', metric: 'interactions', fieldId: 'FBEV10', label: 'Interactions' },
-  { platform: 'facebook', metric: 'posts', fieldId: 'FBEV33', label: 'Posts' },
-
-  { platform: 'linkedin', metric: 'followers', fieldId: 'LIEV01', label: 'Followers' },
-  { platform: 'linkedin', metric: 'reach', fieldId: 'LIEV22', label: 'Impressions (used as reach)' },
-  { platform: 'linkedin', metric: 'interactions', fieldId: 'LIEV28', label: 'Interactions' },
-  { platform: 'linkedin', metric: 'posts', fieldId: 'LIEV27', label: 'Posts' },
-
-  { platform: 'youtube', metric: 'followers', fieldId: 'YTEV01', label: 'Subscribers' },
-  { platform: 'youtube', metric: 'reach', fieldId: 'YTEV02', label: 'Views (used as reach)' },
-  { platform: 'youtube', metric: 'interactions', fieldId: 'YTEV14', label: 'Likes (used as interactions)' },
-  { platform: 'youtube', metric: 'posts', fieldId: 'YTEV04', label: 'Videos' },
+  ['instagram', 'followers', 'followers'], ['instagram', 'reach', 'reach'], ['instagram', 'interactions', 'interactions'],
+  ['instagram', 'posts', 'postsCount'], ['instagram', 'gained', 'followersGained'], ['instagram', 'lost', 'followersLost'],
+  ['facebook', 'followers', 'fbFollowers'], ['facebook', 'reach', 'reach'], ['facebook', 'interactions', 'interactions'],
+  ['facebook', 'posts', 'postsCount'], ['facebook', 'gained', 'followersAcquired'], ['facebook', 'lost', 'followersLost'],
+  ['linkedin', 'followers', 'followers'], ['linkedin', 'reach', 'accountPostImpressions'], ['linkedin', 'interactions', 'accountPostInteractions'],
+  ['linkedin', 'posts', 'accountPostCount'], ['linkedin', 'net', 'deltaFollowers'],
+  ['youtube', 'followers', 'subscribers'], ['youtube', 'reach', 'videoViews'], ['youtube', 'posts', 'videos'],
+  ['youtube', 'gained', 'gained'], ['youtube', 'lost', 'lost'],
 ];
 
 const pad = (n) => String(n).padStart(2, '0');
-const toYYYYMMDD = (d) => `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}`;
-const toISODate = (yyyymmdd) => `${yyyymmdd.slice(0, 4)}-${yyyymmdd.slice(4, 6)}-${yyyymmdd.slice(6, 8)}`;
+const iso = (d) => `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+const yyyymmdd = (d) => iso(d).replace(/-/g, '');
+const H = { 'X-Mc-Auth': E.METRICOOL_API_TOKEN, Accept: 'application/json' };
 
-async function fetchTimeline(fieldId, start, end) {
-  const params = new URLSearchParams({
-    start,
-    end,
-    blogId: E.METRICOOL_BRAND_ID,
-    userId: E.METRICOOL_USER_ID,
-  });
-  const url = `https://app.metricool.com/api/stats/timeline/${fieldId}?${params}`;
-  const res = await fetch(url, { headers: { 'X-Mc-Auth': E.METRICOOL_API_TOKEN, Accept: 'application/json' } });
+async function get(url) {
+  const res = await fetch(url, { headers: H });
   const body = await res.text();
-  if (!res.ok) throw new Error(`Metricool ${res.status} for ${fieldId}: ${body.slice(0, 300)}`);
-  let json;
-  try {
-    json = JSON.parse(body);
-  } catch {
-    throw new Error(`Non-JSON response for ${fieldId}: ${body.slice(0, 300)}`);
-  }
-  return json;
+  return { ok: res.ok, status: res.status, body };
 }
 
-// Metricool's timeline response shape hasn't been confirmed against a live token yet.
-// Handle the plausible shapes defensively and log whatever we actually got on the
-// first metric so a real run's Action log tells us immediately if this needs adjusting.
-function extractPoints(json, fieldId, logSample) {
-  let list = null;
-  if (Array.isArray(json)) list = json;
-  else if (Array.isArray(json?.data)) list = json.data;
-  else if (Array.isArray(json?.values)) list = json.values;
-  else if (Array.isArray(json?.rows)) list = json.rows;
-
-  if (logSample) console.log(`Sample response for ${fieldId}:`, JSON.stringify(json).slice(0, 500));
-  if (!list) return [];
-
-  const points = [];
-  for (const row of list) {
-    let date, value;
-    if (Array.isArray(row)) {
-      // [value, ..., "YYYYMMDD"] (data-studio style) or [date, value]
-      const last = row[row.length - 1];
-      if (typeof last === 'string' && /^\d{8}$/.test(last)) {
-        date = toISODate(last);
-        value = row[0];
-      } else {
-        [date, value] = row;
-      }
-    } else if (row && typeof row === 'object') {
-      date = row.date || row.day || row.timestamp;
-      value = row.value ?? row.count ?? row.total;
-      if (typeof date === 'string' && /^\d{8}$/.test(date)) date = toISODate(date);
+// Find [date, value] pairs anywhere in a Metricool response, whatever its exact shape.
+function extract(node, out = []) {
+  if (Array.isArray(node)) {
+    for (const r of node) {
+      if (Array.isArray(r) && r.length >= 2 && (typeof r[0] === 'string' || typeof r[0] === 'number') && /^\d{8}$|^\d{4}-\d{2}-\d{2}|^\d{10,13}$/.test(String(r[0])) && !isNaN(Number(r[1]))) out.push([r[0], r[1]]);
+      else if (Array.isArray(r) && r.length >= 2 && /^\d{8}$/.test(String(r[r.length - 1])) && !isNaN(Number(r[0]))) out.push([r[r.length - 1], r[0]]);
+      else if (r && typeof r === 'object' && !Array.isArray(r)) {
+        const d = r.dateTime ?? r.date ?? r.day ?? r.timestamp ?? r.x;
+        const v = r.value ?? r.count ?? r.total ?? r.y;
+        if (d != null && v != null && v !== '' && !isNaN(Number(v))) out.push([d, v]);
+        else extract(Object.values(r), out);
+      } else extract(r, out);
     }
-    if (!date || value === null || value === undefined || value === '') continue;
-    const num = Number(value);
-    if (Number.isNaN(num)) continue;
-    points.push({ date: String(date).slice(0, 10), value: num });
+  } else if (node && typeof node === 'object') extract(Object.values(node), out);
+  return out;
+}
+function normDate(d) {
+  const s = String(d);
+  if (/^\d{8}$/.test(s)) return `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}`;
+  if (/^\d{10,13}$/.test(s)) return new Date(s.length === 10 ? s * 1000 : +s).toISOString().slice(0, 10);
+  return s.slice(0, 10);
+}
+
+async function timeline(network, metric, from, to) {
+  const base = `https://app.metricool.com/api/v2/analytics/timelines`;
+  const q = new URLSearchParams({ blogId: E.METRICOOL_BRAND_ID, userId: E.METRICOOL_USER_ID, from: `${iso(from)}T00:00:00`, to: `${iso(to)}T23:59:59`, timezone: TZ, metric, subject: 'account', network });
+  let r = await get(`${base}?${q}`);
+  if (r.ok) return r;
+  if (network === 'youtube') { // MCP uses the v1 timeline endpoint for YouTube account metrics
+    const q1 = new URLSearchParams({ start: yyyymmdd(from), end: yyyymmdd(to), timezone: TZ, userId: E.METRICOOL_USER_ID, blogId: E.METRICOOL_BRAND_ID });
+    r = await get(`https://app.metricool.com/api/stats/timeline/${metric}?${q1}`);
   }
-  return points;
+  return r;
 }
 
 async function upsert(rows) {
   const key = E.SUPABASE_SERVICE_ROLE_KEY;
   const url = `${E.SUPABASE_URL.replace(/\/$/, '')}/rest/v1/social_metrics_daily?on_conflict=platform,metric,date`;
   for (let i = 0; i < rows.length; i += 500) {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        apikey: key,
-        Authorization: `Bearer ${key}`,
-        'Content-Type': 'application/json',
-        Prefer: 'resolution=merge-duplicates,return=minimal',
-      },
-      body: JSON.stringify(rows.slice(i, i + 500)),
-    });
+    const res = await fetch(url, { method: 'POST', headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', Prefer: 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify(rows.slice(i, i + 500)) });
     if (!res.ok) throw new Error(`Supabase ${res.status}: ${(await res.text()).slice(0, 500)}`);
   }
 }
 
 (async () => {
   const now = new Date();
-  const start = toYYYYMMDD(new Date(now.getTime() - DAYS_BACK * 864e5));
-  const end = toYYYYMMDD(now);
+  const from = new Date(now.getTime() - DAYS_BACK * 864e5);
   const syncedAt = now.toISOString();
-
-  const allRows = [];
-  let first = true;
-  for (const m of METRICS) {
+  const rows = [];
+  let failures = 0;
+  for (const [platform, metric, name] of METRICS) {
     try {
-      const json = await fetchTimeline(m.fieldId, start, end);
-      const points = extractPoints(json, m.fieldId, first);
-      first = false;
-      console.log(`${m.platform}/${m.metric} (${m.fieldId}): ${points.length} points`);
-      for (const p of points) {
-        allRows.push({
-          platform: m.platform,
-          metric: m.metric,
-          metric_label: m.label,
-          date: p.date,
-          value: p.value,
-          synced_at: syncedAt,
-        });
-      }
-    } catch (e) {
-      console.error(`Failed ${m.platform}/${m.metric} (${m.fieldId}): ${e.message}`);
-    }
+      const r = await timeline(platform, name, from, now);
+      if (!r.ok) { failures++; console.log(`FAIL ${platform}/${metric} (${name}): HTTP ${r.status} ${r.body.slice(0, 300)}`); continue; }
+      let json; try { json = JSON.parse(r.body); } catch { failures++; console.log(`FAIL ${platform}/${metric}: non-JSON ${r.body.slice(0, 200)}`); continue; }
+      const pts = extract(json);
+      const dates = pts.map((p) => normDate(p[0])).sort();
+      console.log(`${platform}/${metric} (${name}): ${pts.length} points ${dates[0] || ''}..${dates[dates.length - 1] || ''} last=${pts.length ? pts[pts.length - 1][1] : ''}`);
+      if (!pts.length) console.log(`  raw: ${r.body.slice(0, 400)}`);
+      for (const [d, v] of pts) rows.push({ platform, metric, metric_label: name, date: normDate(d), value: Number(v), synced_at: syncedAt });
+    } catch (e) { failures++; console.log(`ERROR ${platform}/${metric}: ${e.message}`); }
   }
-
-  console.log(`Upserting ${allRows.length} rows total`);
-  if (allRows.length) await upsert(allRows);
-  console.log('Done');
-})().catch((e) => {
-  console.error(e.message);
-  process.exit(1);
-});
+  // de-duplicate on the conflict key (a response can repeat a date)
+  const seen = new Map();
+  for (const r of rows) seen.set(`${r.platform}|${r.metric}|${r.date}`, r);
+  const uniq = [...seen.values()];
+  console.log(`Upserting ${uniq.length} rows (${failures} metric failures)`);
+  if (uniq.length) await upsert(uniq);
+  if (!uniq.length) process.exit(1);
+})().catch((e) => { console.error(e); process.exit(1); });
