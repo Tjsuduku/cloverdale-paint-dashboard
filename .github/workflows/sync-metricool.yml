@@ -2,8 +2,8 @@ name: Sync Metricool to Supabase
 
 on:
   schedule:
-    # Every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
-    - cron: '0 0,6,12,18 * * *'
+    # Every 5 minutes
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -26,3 +26,4 @@ jobs:
           METRICOOL_BRAND_ID: 6980817
           METRICOOL_USER_ID: 5352390
         run: node scripts/sync-metricool.js
+
