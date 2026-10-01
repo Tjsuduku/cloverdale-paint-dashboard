@@ -2752,7 +2752,7 @@ $$('.nav[data-ch]').forEach(b=>b.onclick=()=>openChannel(b.dataset.ch));
 const SECS=[['#top','Overview'],['#sec-growth','Growth'],['#sec-reach','Reach'],['#sec-content','Content'],['#sec-geo','Audience'],['#sec-timing','Timing'],['#sec-ga4','Website'],['#sec-ads','Ads'],['#sec-calendar','Calendar'],['#sec-market','Competitors']];
 $('#ptabs').innerHTML=SECS.map(([t,l],i)=>`<button data-go="${t}" aria-current="${i===0}">${l}</button>`).join('');
 const goSec=sel=>{ const t=$(sel); if(!t) return; if(sel==='#top') window.scrollTo({top:0,behavior:RM?'auto':'smooth'}); else t.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'}); };
-$('[data-go]').forEach(b=>b.onclick=()=>goSec(b.dataset.go));
+$$('[data-go]').forEach(b=>b.onclick=()=>goSec(b.dataset.go));
 const __calNavBtn=document.querySelector('.nav[data-go="#sec-calendar"]'); if(__calNavBtn) __calNavBtn.onclick=()=>openBigCalendar();
 $('#navAsk').onclick=()=>openChat(); $('#navReport').onclick=()=>openReport(); $('#navCust').onclick=()=>openCustomize(); $('#reportBtn').onclick=()=>openReport(); $('#pReport').onclick=()=>openReport();
 function setCurrent(sel){ $$('[data-go]').forEach(b=>b.setAttribute('aria-current',String(b.dataset.go===sel))); const pb=$(`#ptabs [data-go="${sel}"]`); if(pb){ const pt=$('#ptabs'); pt.scrollTo({left:pb.offsetLeft-16,behavior:RM?'auto':'smooth'}); } }
