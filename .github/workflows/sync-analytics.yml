@@ -1,0 +1,28 @@
+name: Sync Metricool analytics to Supabase
+
+on:
+  workflow_dispatch:
+  # Schedule added once a manual test run is confirmed clean.
+  # schedule:
+  #   - cron: '0 */6 * * *'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Sync Metricool analytics to Supabase
+        env:
+          METRICOOL_API_TOKEN: ${{ secrets.METRICOOL_API_TOKEN }}
+          SUPABASE_URL: https://fdvvqnwoteksztyqadom.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          METRICOOL_BRAND_ID: 6980817
+          METRICOOL_USER_ID: 5352390
+        run: node scripts/sync-analytics.js
