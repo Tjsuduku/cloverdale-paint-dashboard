@@ -4,9 +4,8 @@
 // Node 20+, no dependencies. Keys come from environment variables (GitHub repo secrets):
 //   IG_USER_ID, IG_ACCESS_TOKEN   Instagram (Business Discovery, public business profiles)
 //   YT_API_KEY                    YouTube Data API v3
-//   X_BEARER_TOKEN                X API (optional, paid per request)
 //   FB_LANDSCAPE_API, FB_LANDSCAPE_TOKEN, FB_LANDSCAPE_USER, FB_LANDSCAPE_BRAND   Facebook pages feed
-// Flags: --check (show what would run, no network)  --dry (collect but don't write)  --force-x
+// Flags: --check (show what would run, no network)  --dry (collect but don't write)
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -19,7 +18,7 @@ const CFG = JSON.parse(await readFile(path.join(HERE, 'config.json'), 'utf8'));
 const env = process.env;
 const ARGS = new Set(process.argv.slice(2));
 const TZ = CFG.timezone || 'America/Vancouver';
-const SECRETS = [env.IG_ACCESS_TOKEN, env.YT_API_KEY, env.X_BEARER_TOKEN, env.FB_LANDSCAPE_TOKEN].filter(s => s && s.length > 5);
+const SECRETS = [env.IG_ACCESS_TOKEN, env.YT_API_KEY, env.FB_LANDSCAPE_TOKEN].filter(s => s && s.length > 5);
 const scrub = s => SECRETS.reduce((a, t) => a.split(t).join('***'), String(s));
 const log = (...a) => console.log(scrub(a.join(' ')));
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -135,35 +134,6 @@ async function youtube() {
       if (e.status === 400 && /API key/i.test(e.message)) { res.fatal = 'The YouTube key is not valid'; break; }
     }
   }
-  return res;
-}
-
-// ---------- X API v2 (optional, paid per request) ----------
-async function xapi() {
-  const c = CFG.channels.x || {};
-  if (!c.enabled) return { state: 'off', note: 'Switched off in config' };
-  if (!env.X_BEARER_TOKEN) return { state: 'setup', note: 'Add X_BEARER_TOKEN to start' };
-  if (c.weekday != null && c.weekday !== WEEKDAY && !ARGS.has('--force-x')) return { state: 'keep', note: 'X updates once a week to keep costs low' };
-  const H = { headers: { Authorization: 'Bearer ' + env.X_BEARER_TOKEN } };
-  const brands = CFG.brands.filter(b => b.x);
-  const res = { posts: [], followers: {}, errors: [] };
-  if (!brands.length) return { state: 'setup', note: 'No X handles in config' };
-  const users = await request(`https://api.x.com/2/users/by?usernames=${brands.map(b => b.x).join(',')}&user.fields=public_metrics`, H);
-  for (const u of users.data || []) {
-    const b = brands.find(x => x.x.toLowerCase() === u.username.toLowerCase());
-    if (!b) continue;
-    res.followers[b.id] = num(u.public_metrics?.followers_count);
-    try {
-      const tw = await request(`https://api.x.com/2/users/${u.id}/tweets?max_results=${Math.max(5, Math.min(100, c.posts || 10))}&exclude=retweets,replies&tweet.fields=created_at,public_metrics`, H);
-      for (const t of tw.data || []) {
-        const m = t.public_metrics || {};
-        res.posts.push({ b: b.id, c: 'x', id: 'x_' + t.id, t: localStamp(new Date(t.created_at)), k: 'post', x: clip(t.text, 280),
-          u: `https://x.com/${u.username}/status/${t.id}`, e: { likes: num(m.like_count), reposts: num(m.retweet_count), replies: num(m.reply_count), quotes: num(m.quote_count) } });
-      }
-      log(`  x          ${b.name.padEnd(18)} ${String(u.public_metrics?.followers_count ?? '').padStart(9)} followers  ${(tw.data || []).length} posts`);
-    } catch (e) { res.errors.push(`${b.name}: ${e.message}`); }
-  }
-  for (const e of users.errors || []) res.errors.push(`${e.value || '?'}: ${e.detail || e.title}`);
   return res;
 }
 
@@ -307,13 +277,12 @@ function merge(db, ch, res) {
 }
 
 // ---------- main ----------
-const jobs = { facebook, instagram, youtube, x: xapi };
+const jobs = { facebook, instagram, youtube };
 
 if (ARGS.has('--check')) {
   log(`Today ${TODAY} (${TZ}), weekday ${WEEKDAY}`);
   log(`Instagram: ${env.IG_USER_ID && env.IG_ACCESS_TOKEN ? 'ready' : 'missing IG_USER_ID / IG_ACCESS_TOKEN'}`);
   log(`YouTube:   ${env.YT_API_KEY ? 'ready' : 'missing YT_API_KEY'}`);
-  log(`X:         ${CFG.channels.x?.enabled ? (env.X_BEARER_TOKEN ? 'ready' : 'missing X_BEARER_TOKEN') : 'off in config'}`);
   log(`Facebook:  ${env.FB_LANDSCAPE_API && env.FB_LANDSCAPE_TOKEN && env.FB_LANDSCAPE_USER && env.FB_LANDSCAPE_BRAND ? 'ready' : 'keys not added (keeps saved data)'}`);
   log(`Brands:    ${CFG.brands.map(b => b.name).join(', ')}`);
   process.exit(0);
@@ -325,7 +294,6 @@ db = db || { schema: 1, channels: {}, followers: {}, posts: [] };
 db.schema = 1; db.tz = TZ;
 db.channels = db.channels || {}; db.followers = db.followers || {}; db.posts = db.posts || [];
 db.brands = CFG.brands.map(({ id, name, short, focus }) => ({ id, name, short: short || name, ...(focus ? { focus: true } : {}) }));
-if (!db.channels.tiktok) db.channels.tiktok = { state: 'none', note: 'TikTok has no public data access for brands' };
 
 log(`Collecting for ${TODAY} (${TZ})`);
 let failures = 0;

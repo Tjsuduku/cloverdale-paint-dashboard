@@ -6,12 +6,10 @@ export const ENG_RULE = {
   facebook: 'reactions + comments + shares',
   instagram: 'likes + comments',
   youtube: 'likes + comments',
-  x: 'likes + reposts + replies',
 };
 export function engOf(ch, e) {
   e = e || {};
   if (ch === 'facebook') return (e.likes || 0) + (e.comments || 0) + (e.shares || 0);
-  if (ch === 'x') return (e.likes || 0) + (e.reposts || 0) + (e.replies || 0);
   return (e.likes || 0) + (e.comments || 0);
 }
 

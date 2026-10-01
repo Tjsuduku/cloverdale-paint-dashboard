@@ -11,8 +11,7 @@
       "focus": true,
       "facebookPageId": "193925330642358",
       "instagram": "cloverdalepaint",
-      "youtube": "@cloverdalepaint",
-      "x": ""
+      "youtube": "@cloverdalepaint"
     },
     {
       "id": "benjaminmoore",
@@ -20,8 +19,7 @@
       "short": "Benjamin Moore",
       "facebookPageId": "118055766322",
       "instagram": "benjaminmoore",
-      "youtube": "@benjaminmoore",
-      "x": ""
+      "youtube": "@benjaminmoore"
     },
     {
       "id": "sherwinwilliams",
@@ -29,8 +27,7 @@
       "short": "Sherwin-Williams",
       "facebookPageId": "309180132920",
       "instagram": "sherwinwilliams",
-      "youtube": "@sherwin-williams",
-      "x": ""
+      "youtube": "@sherwin-williams"
     },
     {
       "id": "behr",
@@ -38,8 +35,7 @@
       "short": "Behr",
       "facebookPageId": "111762511551",
       "instagram": "behrpaint",
-      "youtube": "@behrpaints",
-      "x": ""
+      "youtube": "@behrpaints"
     },
     {
       "id": "dulux",
@@ -47,14 +43,12 @@
       "short": "Dulux",
       "facebookPageId": "177213009058713",
       "instagram": "duluxuk",
-      "youtube": "@DuluxUK",
-      "x": ""
+      "youtube": "@DuluxUK"
     }
   ],
   "channels": {
     "facebook": { "enabled": true, "refreshDays": 35 },
     "instagram": { "enabled": true, "posts": 30 },
-    "youtube": { "enabled": true, "videos": 15 },
-    "x": { "enabled": false, "posts": 10, "weekday": 1 }
+    "youtube": { "enabled": true, "videos": 15 }
   }
 }

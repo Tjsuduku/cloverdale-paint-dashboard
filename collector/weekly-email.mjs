@@ -19,7 +19,7 @@ const from = L.lsAddDays(to, -6);
 const S = L.summarize(db, chans, from, to);
 const P = L.summarize(db, chans, L.lsAddDays(from, -7), L.lsAddDays(to, -7));
 const H = L.headline(S, P);
-const CH = { facebook: 'Facebook', instagram: 'Instagram', youtube: 'YouTube', x: 'X' };
+const CH = { facebook: 'Facebook', instagram: 'Instagram', youtube: 'YouTube' };
 const M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dm = d => `${M[+d.slice(5, 7) - 1]} ${+d.slice(8, 10)}`;
 const range = `${dm(from)} – ${dm(to)}, ${to.slice(0, 4)}`;
