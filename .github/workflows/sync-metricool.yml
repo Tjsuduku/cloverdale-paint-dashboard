@@ -1,0 +1,31 @@
+name: Sync Metricool to Supabase
+
+on:
+  schedule:
+    # Run every 6 hours (00:00, 06:00, 12:00, 18:00 UTC)
+    - cron: '0 0,6,12,18 * * *'
+  workflow_dispatch:  # Allow manual trigger from GitHub UI
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install axios
+
+      - name: Sync Metricool posts to Supabase
+        env:
+          METRICOOL_API_TOKEN: ${{ secrets.METRICOOL_API_TOKEN }}
+          SUPABASE_URL: https://fdvvqnwoteksztyqadom.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          METRICOOL_BRAND_ID: 6980817
+          METRICOOL_USER_ID: 5352390
+        run: node scripts/sync-metricool.js
