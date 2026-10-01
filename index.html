@@ -185,7 +185,7 @@ kbd{font-family:var(--fcode);font-size:10.5px;color:var(--muted);border:1px soli
 .g-gl{grid-column:span 8}.g-scale{grid-column:span 4}
 .g-km{grid-column:span 6}.g-vw,.g-im{grid-column:span 3}
 .g-posts{grid-column:span 8}.g-wk{grid-column:span 4}
-.g-heat{grid-column:span 8}.g-cal{grid-column:span 4}
+.g-heat{grid-column:span 12}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 22px 22px;position:relative;min-width:0;animation:rise .55s var(--ease) both}
 @keyframes rise{from{transform:translateY(10px)}}
 .card-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
@@ -713,7 +713,7 @@ body.locked .app,body.locked .fab{visibility:hidden}
 @media (max-width:1280px) and (hover:hover) and (pointer:fine){.nav:hover .tipl{opacity:1}}
 #themeRail{display:none}
 @media (max-width:1180px){
-  .g-gl,.g-scale,.g-posts,.g-wk,.g-heat,.g-cal,.g-aud,.g-int{grid-column:span 12}
+  .g-gl,.g-scale,.g-posts,.g-wk,.g-heat,.g-aud,.g-int{grid-column:span 12}
   .ring-wrap{grid-template-columns:minmax(0,1fr) 190px;gap:32px}.ring svg{width:190px;height:190px}
   .g-km{grid-column:span 12}.g-vw,.g-im{grid-column:span 6}
   .wk-cols{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px;align-items:start}
@@ -1217,8 +1217,8 @@ body.locked .app,body.locked .fab{visibility:hidden}
 @media (hover:hover) and (pointer:fine){.cal-pill:not(.on):hover{color:var(--ink-2)}}
 .cal-nav{display:flex;align-items:center;gap:6px}
 .cal-range{font-size:13px;font-weight:600;color:var(--ink-2);min-width:150px;text-align:center}
-.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
-.cal-day{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px;min-height:120px;display:flex;flex-direction:column;gap:8px}
+.cal-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.cal-day{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;min-height:170px;display:flex;flex-direction:column;gap:10px}
 .cal-day.is-today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
 .cal-day-h{display:flex;align-items:center;justify-content:space-between;font-family:var(--f)}
 .cal-day-h span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
@@ -1246,11 +1246,6 @@ body.locked .app,body.locked .fab{visibility:hidden}
 @media (max-width:980px){.cal-grid{grid-template-columns:repeat(7,minmax(130px,1fr));overflow-x:auto}}
 @media (max-width:760px){.cal-grid{grid-template-columns:repeat(7,minmax(118px,1fr))}.cal-head{flex-direction:column;align-items:stretch}.cal-nav{justify-content:space-between}}
 
-.cal-teaser-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
-.teaser-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2)}
-.teaser-row svg{width:14px;height:14px;flex:none;color:var(--muted)}
-.t-cap{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.t-time{color:var(--muted);font-family:var(--fm);font-size:11px;flex:none}
 .cal-post-scrim{position:fixed;inset:0;background:var(--scrim);z-index:65;animation:fi .25s var(--ease);backdrop-filter:blur(2px)}
 .cal-big{position:fixed;inset:16px;z-index:60;background:var(--surface);border-radius:20px;box-shadow:var(--pop);display:flex;flex-direction:column;overflow:hidden;animation:rise .3s var(--ease) both}
 .cal-big-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line);flex:none}
@@ -1389,7 +1384,7 @@ body.locked .app,body.locked .fab{visibility:hidden}
       <section class="geo" id="sec-geo"></section>
 
       <section class="sec" id="sec-timing"><div class="sh"><h2>Timing</h2><p>When the audience is online, and what went out when.</p></div>
-        <div class="grid"><div class="card g-heat" id="sec-time"></div><div class="card g-cal" id="calCard"></div></div>
+        <div class="grid"><div class="card g-heat" id="sec-time"></div></div>
       </section>
 
       <section class="sec nx" id="sec-ga4" aria-label="Google Analytics 4"><div id="ga4Root"></div></section>
@@ -2161,26 +2156,6 @@ function renderWeek(){ const n=Math.max(state.period,28); const ps=postsIn(null,
     <div class="fmix"><span class="lab">By format</span>${['Video','Image','Text'].filter(t=>fm[t]).map((t,i)=>`<div class="fr"><span>${t}</span><span class="bar"><i style="width:${fm[t]/fmx*100}%;--c:${t==='Video'?'var(--ink)':'var(--faint)'};animation-delay:${i*80}ms"></i></span><b>${fm[t]}</b></div>`).join('')}</div><div class="fmix"><span class="lab">By channel</span>${SOC.map((k,i)=>`<div class="fr"><span>${CH[k].name}</span><span class="bar"><i style="width:${(fc[k]||0)/fcx*100}%;--c:${cvar(k)};animation-delay:${i*80}ms"></i></span><b>${fc[k]||0}</b></div>`).join('')}</div></div></div>`;
   countUp($('#wkN'),pp.length); }
 
-/* ===== content calendar teaser (Timing widget) ===== */
-async function renderCalTeaser(){
-  const root=$('#calCard'); if(!root) return;
-  if(!window.CP||!window.CP.sb){ root.innerHTML='<div class="card-h" style="margin-bottom:10px"><div><h3>Content calendar</h3><span class="sub">Sign in to view</span></div></div>'; return; }
-  await ensureCalRows();
-  if(!calWeekStart) calWeekStart=calStartOfWeek(new Date());
-  const wkEnd=new Date(calWeekStart); wkEnd.setDate(wkEnd.getDate()+7);
-  const upcoming=(calRows||[]).filter(p=>{ const d=new Date(p.publication_date); return d>=calWeekStart && d<wkEnd; }).sort((a,b)=>new Date(a.publication_date)-new Date(b.publication_date));
-  const next3=upcoming.slice(0,3);
-  const listHtml = next3.length ? next3.map(p=>{
-    const d=new Date(p.publication_date);
-    const icoKey=p.platform==='instagram'?'ig':'fb';
-    const timeStr=isNaN(d)?'—':d.toLocaleDateString('en-CA',{weekday:'short'})+' '+d.toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit'});
-    const cap=(p.caption||'').trim()?(p.caption.length>42?p.caption.slice(0,42)+'…':p.caption):'(no caption)';
-    return `<div class="teaser-row">${CAL_ICO[icoKey]}<span class="t-cap">${esc(cap)}</span><span class="t-time">${timeStr}</span></div>`;
-  }).join('') : '<p class="muted" style="font-size:12.5px;margin:4px 0 0">No posts scheduled this week.</p>';
-  root.innerHTML=`<div class="card-h" style="margin-bottom:10px"><div><h3>Content calendar</h3><span class="sub">${upcoming.length} post${upcoming.length===1?'':'s'} this week</span></div><button class="btn sm" id="calTeaserOpen">Open full calendar</button></div>
-    <div class="cal-teaser-list">${listHtml}</div>`;
-  $('#calTeaserOpen', root).onclick=()=>openBigCalendar();
-}
 /* ===== geography ===== */
 const CNAME={CA:'Canada',US:'United States',CN:'China',GB:'United Kingdom',IN:'India',BR:'Brazil',AU:'Australia',NG:'Nigeria',IT:'Italy',MX:'Mexico',PH:'Philippines',JP:'Japan',RU:'Russia',PK:'Pakistan',IE:'Ireland',IR:'Iran',TR:'Türkiye',ZA:'South Africa',AR:'Argentina',DZ:'Algeria',PL:'Poland',CL:'Chile',FR:'France',DE:'Germany',GR:'Greece',LB:'Lebanon',NL:'Netherlands',PA:'Panama',EG:'Egypt',KE:'Kenya',MA:'Morocco',MY:'Malaysia',PT:'Portugal',AE:'UAE',ES:'Spain',GH:'Ghana',ID:'Indonesia',KR:'South Korea',RO:'Romania',VE:'Venezuela',AL:'Albania',CO:'Colombia',EC:'Ecuador',TW:'Taiwan',TZ:'Tanzania',BD:'Bangladesh',PR:'Puerto Rico',HK:'Hong Kong',JO:'Jordan',LY:'Libya',UG:'Uganda',IL:'Israel',IQ:'Iraq',CM:'Cameroon',MW:'Malawi',ZM:'Zambia',TH:'Thailand',VN:'Vietnam',TN:'Tunisia',LK:'Sri Lanka'};
 const NUM={CA:124,US:840,CN:156,GB:826,IN:356,BR:76,AU:36,NG:566,IT:380,MX:484,PH:608,JP:392,RU:643,PK:586,IE:372,IR:364,TR:792,ZA:710,AR:32,DZ:12,PL:616,CL:152,FR:250,DE:276,GR:300,LB:422,NL:528,PA:591,EG:818,KE:404,MA:504,MY:458,PT:620,AE:784,ES:724,GH:288,ID:360,KR:410,RO:642,VE:862,AL:8,CO:170,EC:218,TW:158,TZ:834,BD:50,PR:630,HK:344,JO:400,LY:434,UG:800,IL:376,IQ:368,CM:120,MW:454,ZM:894,TH:764,VN:704,TN:788,LK:144};
@@ -3227,13 +3202,13 @@ async function nxLoad(){
   try{ const a=await adsLoad(); if(a) ADS=a; }catch(e){ ADS={source:'error',error:'TJ\'s server returned '+e.message}; }
   if(GA4.source!=='sample'&&state.mods.ga4) renderGA4(); if(ADS.source!=='sample'&&state.mods.ads) renderAds(); }
 
-function renderAll(){ const M=state.mods; vis('#plats',M.plats); vis('.row2',M.hero); vis('#glCard',M.gl); vis('#scaleCard',M.scale); vis('#sec-reach',M.km); vis('#sec-posts',M.posts); vis('#wkCard',M.rail); vis('#calCard',M.rail); vis('#sec-geo',M.geo); vis('#sec-market',M.bench); vis('#sec-time',M.time); vis('#sec-ga4',M.ga4); vis('#sec-ads',M.ads); vis('#sec-calendar',M.cal);
+function renderAll(){ const M=state.mods; vis('#plats',M.plats); vis('.row2',M.hero); vis('#glCard',M.gl); vis('#scaleCard',M.scale); vis('#sec-reach',M.km); vis('#sec-posts',M.posts); vis('#wkCard',M.rail); vis('#sec-geo',M.geo); vis('#sec-market',M.bench); vis('#sec-time',M.time); vis('#sec-ga4',M.ga4); vis('#sec-ads',M.ads); vis('#sec-calendar',M.cal);
   vis('#sec-growth',M.gl||M.scale); vis('#sec-content',M.posts||M.rail); vis('#sec-timing',M.time||M.rail); vis('#sec-overview',M.plats||M.hero);
   const full=(a,b,ca,cb)=>{ const ea=$(a), eb=$(b); if(ea) ea.style.gridColumn=cb?'':'1/-1'; if(eb) eb.style.gridColumn=ca?'':'1/-1'; };
-  full('#glCard','#scaleCard',M.gl,M.scale); full('#sec-posts','#wkCard',M.posts,M.rail); full('#sec-time','#calCard',M.time,M.rail);
+  full('#glCard','#scaleCard',M.gl,M.scale); full('#sec-posts','#wkCard',M.posts,M.rail);
   renderPeriod(); renderBell(); renderLede();
   if(M.plats) renderPlats(); else SOC.forEach(k=>{ const nv=$(`[data-nv="${k}"]`); if(nv) nv.textContent=fmtInt(agg(k).followers); });
-  if(M.hero) renderHero(); if(M.gl) renderGL(); if(M.scale) renderScale(); if(M.km) renderRow4(); if(M.posts) renderPosts(); if(M.rail){ renderWeek(); renderCalTeaser(); } if(M.geo) renderGeo(); if(M.bench) renderLandscape(); if(M.time) renderHeat(); if(M.ga4) renderGA4(); if(M.ads) renderAds();
+  if(M.hero) renderHero(); if(M.gl) renderGL(); if(M.scale) renderScale(); if(M.km) renderRow4(); if(M.posts) renderPosts(); if(M.rail){ renderWeek(); } if(M.geo) renderGeo(); if(M.bench) renderLandscape(); if(M.time) renderHeat(); if(M.ga4) renderGA4(); if(M.ads) renderAds();
   if(chatEl){ const sp=$('.chat-h span',chatEl); if(sp) sp.innerHTML='<i></i>Cloverdale Paint · '+PL[state.period]; }
   if($('.drawer',layer)&&drawerCh&&!$('#pb',layer)&&!$('#px',layer)) renderDrawer(); }
 
