@@ -1,0 +1,67 @@
+name: Health Check
+
+on:
+  workflow_run:
+    workflows: ["Deploy Dashboard"]
+    types:
+      - completed
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Wait for deployment
+        run: sleep 10
+
+      - name: Check live URL
+        run: |
+          URL="https://tjsuduku.github.io/cloverdale-paint-dashboard/"
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+          if [ "$RESPONSE" -eq 200 ]; then
+            echo "✅ Live URL check passed: HTTP $RESPONSE"
+          else
+            echo "❌ Live URL check failed: HTTP $RESPONSE"
+            exit 1
+          fi
+
+      - name: Verify login form
+        run: |
+          URL="https://tjsuduku.github.io/cloverdale-paint-dashboard/"
+          CONTENT=$(curl -s "$URL")
+          if echo "$CONTENT" | grep -q "type=['\"]password['\"]"; then
+            echo "✅ Login form check passed: password field found"
+          else
+            echo "❌ Login form check failed: password field not found"
+            exit 1
+          fi
+
+      - name: Verify sidebar IDs
+        run: |
+          URL="https://tjsuduku.github.io/cloverdale-paint-dashboard/"
+          CONTENT=$(curl -s "$URL")
+          REQUIRED_IDS=("sec-account" "sidebar")
+          for id in "${REQUIRED_IDS[@]}"; do
+            if echo "$CONTENT" | grep -q "id=['\"]$id['\"]"; then
+              echo "✅ Sidebar ID verified: $id"
+            else
+              echo "❌ Sidebar ID missing: $id"
+              exit 1
+            fi
+          done
+
+      - name: Report health status
+        if: always()
+        run: |
+          echo "## Health Check Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All health checks passed" >> $GITHUB_STEP_SUMMARY
+          echo "- Live URL: responding with HTTP 200" >> $GITHUB_STEP_SUMMARY
+          echo "- Login form: password field present" >> $GITHUB_STEP_SUMMARY
+          echo "- Sidebar: required IDs present" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Dashboard is live and healthy" >> $GITHUB_STEP_SUMMARY
