@@ -2,9 +2,8 @@ name: Sync Metricool analytics to Supabase
 
 on:
   workflow_dispatch:
-  # Schedule added once a manual test run is confirmed clean.
-  # schedule:
-  #   - cron: '0 */6 * * *'
+  schedule:
+    - cron: '0 */6 * * *'
 
 jobs:
   sync:
