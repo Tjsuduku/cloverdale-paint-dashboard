@@ -198,7 +198,7 @@ kbd{font-family:var(--fcode);font-size:10.5px;color:var(--muted);border:1px soli
 .g-gl{grid-column:span 8}.g-scale{grid-column:span 4}
 .g-km{grid-column:span 6}.g-vw,.g-im{grid-column:span 3}
 .g-posts{grid-column:span 8}.g-wk{grid-column:span 4}
-.g-heat{grid-column:span 8}.g-cal{grid-column:span 4}
+.g-heat{grid-column:span 12}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 22px 22px;position:relative;min-width:0;animation:rise .55s var(--ease) both}
 @keyframes rise{from{transform:translateY(10px)}}
 .card-h{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
@@ -381,24 +381,6 @@ kbd{font-family:var(--fcode);font-size:10.5px;color:var(--muted);border:1px soli
 .fmix .fr b{text-align:right;font-family:var(--fm);font-size:11.5px;font-weight:500}
 
 /* ---------- calendar ---------- */
-.cal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.cal-h b{font-size:15px;font-weight:650}
-.cal-h button{border:1px solid var(--line);background:var(--surface);width:30px;height:30px;border-radius:8px;font-size:15px;color:var(--ink-2);display:grid;place-items:center}
-.cal-h button:disabled{opacity:.35;cursor:default}
-.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;text-align:center}
-.cal .dw{font-family:var(--fm);font-size:10px;letter-spacing:.06em;color:var(--muted);padding:4px 0 6px}
-.cal button{border:0;background:none;height:40px;border-radius:8px;font-size:13px;font-weight:500;position:relative;transition:background .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0}
-@media (hover:hover) and (pointer:fine){.cal button:hover:not(:disabled){background:var(--surface-2)}}
-.cal button.out{color:var(--faint)}
-.cal button.has{font-weight:650}
-.cal button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
-.cal .pd{display:flex;gap:2px;height:4px}
-.cal .pd i{width:4px;height:4px;border-radius:1px;background:var(--c)}
-.daylist{margin-top:12px;display:grid;gap:6px}
-.dayitem{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:9px;background:var(--surface-2);border:0;text-align:left;width:100%}
-@media (hover:hover) and (pointer:fine){.dayitem:hover{background:var(--surface-3)}}
-.dayitem svg{width:18px;height:18px;flex:none}
-.dayitem span{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ---------- heatmap ---------- */
 .heat{display:grid;grid-template-columns:36px repeat(24,minmax(0,1fr));gap:3px}
@@ -724,7 +706,7 @@ body.locked .app,body.locked .fab{visibility:hidden}
 @media (max-width:1280px) and (hover:hover) and (pointer:fine){.nav:hover .tipl{opacity:1}}
 #themeRail{display:none}
 @media (max-width:1180px){
-  .g-gl,.g-scale,.g-posts,.g-wk,.g-heat,.g-cal,.g-aud,.g-int{grid-column:span 12}
+  .g-gl,.g-scale,.g-posts,.g-wk,.g-heat,.g-aud,.g-int{grid-column:span 12}
   .ring-wrap{grid-template-columns:minmax(0,1fr) 190px;gap:32px}.ring svg{width:190px;height:190px}
   .g-km{grid-column:span 12}.g-vw,.g-im{grid-column:span 6}
   .wk-cols{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px;align-items:start}
@@ -1219,6 +1201,51 @@ body.locked .app,body.locked .fab{visibility:hidden}
   .nx table.t th,.nx table.t td{padding:10px 12px}
 }
 
+
+.cal-wrap{display:flex;flex-direction:column;gap:16px}
+.cal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.cal-pills{display:flex;flex-wrap:wrap;gap:6px;background:var(--surface-2);padding:4px;border-radius:10px}
+.cal-pill{border:0;background:none;padding:7px 14px;border-radius:7px;font-size:12.5px;font-weight:600;font-family:var(--f);color:var(--muted);cursor:pointer;transition:background .18s,color .18s}
+.cal-pill.on{background:var(--surface);color:var(--ink);box-shadow:var(--lift)}
+@media (hover:hover) and (pointer:fine){.cal-pill:not(.on):hover{color:var(--ink-2)}}
+.cal-nav{display:flex;align-items:center;gap:6px}
+.cal-range{font-size:13px;font-weight:600;color:var(--ink-2);min-width:150px;text-align:center}
+.cal-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.cal-day{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;min-height:170px;display:flex;flex-direction:column;gap:10px}
+.cal-day.is-today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.cal-day-h{display:flex;align-items:center;justify-content:space-between;font-family:var(--f)}
+.cal-day-h span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.cal-day-h b{font-size:15px;font-weight:650}
+.cal-day.is-today .cal-day-h b{color:var(--accent)}
+.cal-cards{display:flex;flex-direction:column;gap:8px}
+.cal-none{font-size:12px;color:var(--faint);padding:6px 2px}
+.cal-card{border:1px solid var(--line-2);border-radius:10px;overflow:hidden;cursor:pointer;background:var(--surface);transition:transform .18s,box-shadow .18s}
+@media (hover:hover) and (pointer:fine){.cal-card:hover{transform:translateY(-2px);box-shadow:var(--lift)}}
+.cal-thumb{position:relative;aspect-ratio:1/1;background:var(--surface-2);overflow:hidden}
+.cal-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.cal-ph{width:100%;height:100%;display:grid;place-items:center;color:var(--faint)}
+.cal-ph svg{width:28px;height:28px}
+.cal-badge{position:absolute;top:6px;left:6px;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.cal-badge svg{width:11px;height:11px}
+.cal-meta{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 8px;gap:6px}
+@media (max-width:760px){.cal-meta{flex-wrap:wrap;row-gap:4px}}
+.cal-time{font-size:11px;font-family:var(--fm);color:var(--ink-2);font-weight:600}
+.cal-tag{font-size:10px;font-weight:650;padding:2px 7px;border-radius:99px}
+.cal-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:66;width:min(440px,92vw);max-height:86vh;overflow-y:auto;background:var(--surface);border-radius:18px;box-shadow:var(--pop);animation:rise .3s var(--ease) both}
+.cal-modal img{width:100%;display:block;background:var(--surface-2)}
+.cal-modal-body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px}
+.cal-modal-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cal-modal-cap{font-size:13.5px;line-height:1.5;color:var(--ink-2);white-space:pre-wrap}
+.cal-modal .x{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(18,20,23,.5);color:#fff;display:grid;place-items:center;cursor:pointer}
+@media (max-width:980px){.cal-grid{grid-template-columns:repeat(7,minmax(130px,1fr));overflow-x:auto}}
+@media (max-width:760px){.cal-grid{grid-template-columns:repeat(7,minmax(118px,1fr))}.cal-head{flex-direction:column;align-items:stretch}.cal-nav{justify-content:space-between}}
+
+.cal-post-scrim{position:fixed;inset:0;background:var(--scrim);z-index:65;animation:fi .25s var(--ease);backdrop-filter:blur(2px)}
+.cal-big{position:fixed;inset:16px;z-index:60;background:var(--surface);border-radius:20px;box-shadow:var(--pop);display:flex;flex-direction:column;overflow:hidden;animation:rise .3s var(--ease) both}
+.cal-big-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line);flex:none}
+.cal-big-head h2{margin:0;font-size:18px;font-weight:650;letter-spacing:-.01em}
+.cal-big-body{flex:1;overflow-y:auto;padding:22px}
+@media (max-width:760px){.cal-big{inset:0;border-radius:0}}
 </style>
 <div class="gate" id="gate" role="dialog" aria-label="Sign in">
   <div class="art">
@@ -1297,7 +1324,7 @@ body.locked .app,body.locked .fab{visibility:hidden}
     blocks.forEach(function(b){ var s=document.createElement('script'); s.textContent=b.textContent; document.body.appendChild(s); b.remove(); });
     try{
       var st=document.getElementById('syncT'), sc=document.querySelector('.syncc');
-      if(window.CP_LIVE){ var d=window.CP_LIVE.synced||new Date(); var label='Synced '+d.toLocaleDateString('en-CA',{month:'short',day:'numeric'})+', '+d.toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit'}); if(st) st.textContent=label; if(sc) sc.title=label+' data to '+window.CP_LIVE.endIso; var sp=sc&&sc.querySelector('span'); if(sp) sp.textContent='Live, updates hourly'; }
+      if(window.CP_LIVE){ var d=window.CP_LIVE.synced||new Date(); var label='Synced '+d.toLocaleDateString('en-CA',{month:'short',day:'numeric'})+', '+d.toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit'}); if(st) st.textContent=label; if(sc) sc.title=label+' data to '+window.CP_LIVE.endIso; var sp=sc&&sc.querySelector('span'); if(sp) sp.textContent='Live, updates automatically'; }
       else if(note){ if(st) st.textContent=note; }
     }catch(e){}
     // check for newer data every 30 minutes and reload (the sign-in session is kept)
@@ -1340,6 +1367,7 @@ body.locked .app,body.locked .fab{visibility:hidden}
       <button class="nav" data-go="#sec-timing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span class="nt">Timing</span><span class="tipl">Timing</span></button>
       <button class="nav" data-go="#sec-market"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 20V11M12 20V5M19 20v-6"/></svg><span class="nt">Competitors</span><span class="tipl">Competitors</span></button>
       <button class="nav" data-go="#sec-ads"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 14v-4l11-5v14z"/><path d="M15 9.5a3 3 0 0 1 0 5M7 14l1.5 5h2.5L10 14"/></svg><span class="nt">Ad campaigns</span><span class="tipl">Ad campaigns</span></button>
+      <button class="nav" data-go="#sec-calendar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16M8 3v4M16 3v4M4 7v13h16V7z"/></svg><span class="nt">Content calendar</span><span class="tipl">Content calendar</span></button>
     </nav>
     <div class="navg"><span class="navl">Channels</span><div id="navCh" style="display:grid;gap:2px;justify-items:inherit"></div></div>
     <div class="navg"><span class="navl">Tools</span>
@@ -1395,12 +1423,14 @@ body.locked .app,body.locked .fab{visibility:hidden}
       <section class="geo" id="sec-geo"></section>
 
       <section class="sec" id="sec-timing"><div class="sh"><h2>Timing</h2><p>When the audience is online, and what went out when.</p></div>
-        <div class="grid"><div class="card g-heat" id="sec-time"></div><div class="card g-cal" id="calCard"></div></div>
+        <div class="grid"><div class="card g-heat" id="sec-time"></div></div>
       </section>
 
       <section class="sec nx" id="sec-ga4" aria-label="Google Analytics 4"><div id="ga4Root"></div></section>
 
       <section class="sec nx" id="sec-ads" aria-label="Ad campaigns"><div id="adsRoot"></div></section>
+
+      <section class="sec nx" id="sec-calendar" aria-label="Content calendar"><div class="sh"><h2>Content calendar</h2><p>Scheduled and published posts across every connected channel.</p></div><div id="calListRoot"></div></section>
 
       <section class="sec" id="sec-market" aria-label="Competitors"><div id="lsRoot"></div></section>
 
@@ -2052,7 +2082,7 @@ function updateRendersWithLiveData(metrics) {
 /* live data is merged at start-up by the sign-in script (see cpMerge) */
 
 const saved=store.get('cp.dash.v3',{});
-const state={period:saved.period||30, mods:Object.assign({plats:true,hero:true,gl:true,scale:true,km:true,posts:true,rail:true,geo:true,bench:true,time:true,ga4:true,ads:true},saved.mods||{}), glCh:'ig', postTab:'top', postKey:'inter', calM:8, calSel:null, geoNet:'ig', geoView:'ca', benchMetric:'er', timeNet:'ig'};
+const state={period:saved.period||30, mods:Object.assign({plats:true,hero:true,gl:true,scale:true,km:true,posts:true,rail:true,geo:true,bench:true,time:true,ga4:true,ads:true,cal:true},saved.mods||{}), glCh:'ig', postTab:'top', postKey:'inter', geoNet:'ig', geoView:'ca', benchMetric:'er', timeNet:'ig'};
 const persist=()=>store.set('cp.dash.v3',{period:state.period,mods:state.mods});
 
 const range=(n,off=0)=>[DAYS-n-off,DAYS-off];
@@ -2212,19 +2242,6 @@ function renderWeek(){ const n=Math.max(state.period,28); const ps=postsIn(null,
     </div><div><div class="wk-stats"><div><span>Posts published</span><b id="wkN">0</b></div><div><span>Videos and reels</span><b>${pp.length?Math.round(vids/pp.length*100):0}%</b></div></div>
     <div class="fmix"><span class="lab">By format</span>${['Video','Image','Text'].filter(t=>fm[t]).map((t,i)=>`<div class="fr"><span>${t}</span><span class="bar"><i style="width:${fm[t]/fmx*100}%;--c:${t==='Video'?'var(--ink)':'var(--faint)'};animation-delay:${i*80}ms"></i></span><b>${fm[t]}</b></div>`).join('')}</div><div class="fmix"><span class="lab">By channel</span>${SOC.map((k,i)=>`<div class="fr"><span>${CH[k].name}</span><span class="bar"><i style="width:${(fc[k]||0)/fcx*100}%;--c:${cvar(k)};animation-delay:${i*80}ms"></i></span><b>${fc[k]||0}</b></div>`).join('')}</div></div></div>`;
   countUp($('#wkN'),pp.length); }
-
-/* ===== calendar ===== */
-function renderCal(){ const m=state.calM, y=2026; const first=new Date(y,m,1), dim=new Date(y,m+1,0).getDate(); const lead=first.getDay(); const names=['S','M','T','W','T','F','S'];
-  const byDay={}; POSTS.forEach(p=>{ if(p.date.getMonth()===m){ const d=p.date.getDate(); (byDay[d]=byDay[d]||[]).push(p); } });
-  let cells=''; const prevDim=new Date(y,m,0).getDate(); for(let i=0;i<lead;i++) cells+=`<button class="out" disabled><span>${prevDim-lead+1+i}</span><span class="pd"></span></button>`;
-  for(let d=1;d<=dim;d++){ const ps=byDay[d]||[]; const chs=[...new Set(ps.map(p=>p.ch))]; const inR=idxDate(new Date(y,m,d)); const out=inR<0||inR>=DAYS; cells+=`<button data-d="${d}" aria-pressed="${state.calSel===d}" class="${out?'out':''} ${ps.length?'has':''}" aria-label="${first.toLocaleDateString('en-CA',{month:'long'})} ${d}, ${ps.length} posts"><span>${d}</span><span class="pd">${chs.map(c=>`<i style="--c:${cvar(c)}"></i>`).join('')}</span></button>`; }
-  const tail=(7-(lead+dim)%7)%7; for(let i=1;i<=tail;i++) cells+=`<button class="out" disabled><span>${i}</span><span class="pd"></span></button>`;
-  const sel=state.calSel&&byDay[state.calSel]?byDay[state.calSel]:null; const mc=Object.values(byDay).reduce((a,b)=>a+b.length,0);
-  $('#calCard').innerHTML=`<div class="card-h" style="margin-bottom:10px"><div><h3>Publishing calendar</h3><span class="sub">${mc} posts in ${first.toLocaleDateString('en-CA',{month:'long'})}</span></div></div><div class="cal-h"><button id="cPrev" aria-label="Previous month" ${m<=5?'disabled':''}>‹</button><b>${first.toLocaleDateString('en-CA',{month:'long',year:'numeric'})}</b><button id="cNext" aria-label="Next month" ${m>=8?'disabled':''}>›</button></div><div class="cal">${names.map(n=>`<span class="dw">${n}</span>`).join('')}${cells}</div>
-    <div class="daylist">${sel?sel.map(p=>`<button class="dayitem" data-id="${p.id}">${LG[p.ch](18)}<span>${esc(p.title)}</span></button>`).join(''):`<p class="note" style="margin:6px 0 0">Squares under a date show which channels posted. Pick a date to see its posts.</p>`}</div>`;
-  $('#cPrev').onclick=()=>{ state.calM--; state.calSel=null; renderCal(); }; $('#cNext').onclick=()=>{ state.calM++; state.calSel=null; renderCal(); };
-  $$('.cal button[data-d]').forEach(b=>b.onclick=()=>{ const d=+b.dataset.d; state.calSel=state.calSel===d?null:d; renderCal(); });
-  $$('.dayitem').forEach(b=>b.onclick=()=>openPost(POSTS.find(p=>p.id===b.dataset.id))); }
 
 /* ===== geography ===== */
 const CNAME={CA:'Canada',US:'United States',CN:'China',GB:'United Kingdom',IN:'India',BR:'Brazil',AU:'Australia',NG:'Nigeria',IT:'Italy',MX:'Mexico',PH:'Philippines',JP:'Japan',RU:'Russia',PK:'Pakistan',IE:'Ireland',IR:'Iran',TR:'Türkiye',ZA:'South Africa',AR:'Argentina',DZ:'Algeria',PL:'Poland',CL:'Chile',FR:'France',DE:'Germany',GR:'Greece',LB:'Lebanon',NL:'Netherlands',PA:'Panama',EG:'Egypt',KE:'Kenya',MA:'Morocco',MY:'Malaysia',PT:'Portugal',AE:'UAE',ES:'Spain',GH:'Ghana',ID:'Indonesia',KR:'South Korea',RO:'Romania',VE:'Venezuela',AL:'Albania',CO:'Colombia',EC:'Ecuador',TW:'Taiwan',TZ:'Tanzania',BD:'Bangladesh',PR:'Puerto Rico',HK:'Hong Kong',JO:'Jordan',LY:'Libya',UG:'Uganda',IL:'Israel',IQ:'Iraq',CM:'Cameroon',MW:'Malawi',ZM:'Zambia',TH:'Thailand',VN:'Vietnam',TN:'Tunisia',LK:'Sri Lanka'};
@@ -2794,13 +2811,14 @@ $('#searchQ').addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.value
 document.addEventListener('keydown',e=>{ if(e.key==='/'&&!e.target.closest('input,textarea')&&!layer.innerHTML){ e.preventDefault(); const q=$('#searchQ'); if(q&&q.offsetParent){ q.focus(); } else openChat(); } });
 $('#navCh').innerHTML=SOC.map(k=>`<button class="nav" data-ch="${k}"><span class="bi">${LG[k](18)}</span><span class="nt">${CH[k].name}</span><span class="nv" data-nv="${k}"></span><span class="tipl">${CH[k].name}</span></button>`).join('')+`<button class="nav" data-go="#sec-ga4"><span class="bi">${LG.ga(18)}</span><span class="nt">Google Analytics 4</span><span class="nv" data-nv="ga4"></span><span class="tipl">Google Analytics 4</span></button>`;
 $$('.nav[data-ch]').forEach(b=>b.onclick=()=>openChannel(b.dataset.ch));
-const SECS=[['#top','Overview'],['#sec-growth','Growth'],['#sec-reach','Reach'],['#sec-content','Content'],['#sec-geo','Audience'],['#sec-timing','Timing'],['#sec-ga4','Website'],['#sec-ads','Ads'],['#sec-market','Competitors']];
+const SECS=[['#top','Overview'],['#sec-growth','Growth'],['#sec-reach','Reach'],['#sec-content','Content'],['#sec-geo','Audience'],['#sec-timing','Timing'],['#sec-ga4','Website'],['#sec-ads','Ads'],['#sec-calendar','Calendar'],['#sec-market','Competitors']];
 $('#ptabs').innerHTML=SECS.map(([t,l],i)=>`<button data-go="${t}" aria-current="${i===0}">${l}</button>`).join('');
 const goSec=sel=>{ const t=$(sel); if(!t) return; if(sel==='#top') window.scrollTo({top:0,behavior:RM?'auto':'smooth'}); else t.scrollIntoView({behavior:RM?'auto':'smooth',block:'start'}); };
 $$('[data-go]').forEach(b=>b.onclick=()=>goSec(b.dataset.go));
+const __calNavBtn=document.querySelector('.nav[data-go="#sec-calendar"]'); if(__calNavBtn) __calNavBtn.onclick=()=>openBigCalendar();
 $('#navAsk').onclick=()=>openChat(); $('#navReport').onclick=()=>openReport(); $('#navCust').onclick=()=>openCustomize(); $('#reportBtn').onclick=()=>openReport(); $('#pReport').onclick=()=>openReport();
 function setCurrent(sel){ $$('[data-go]').forEach(b=>b.setAttribute('aria-current',String(b.dataset.go===sel))); const pb=$(`#ptabs [data-go="${sel}"]`); if(pb){ const pt=$('#ptabs'); pt.scrollTo({left:pb.offsetLeft-16,behavior:RM?'auto':'smooth'}); } }
-if('IntersectionObserver' in window){ const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting) setCurrent(e.target.id==='sec-overview'?'#top':'#'+e.target.id); }); },{rootMargin:'-40% 0px -55% 0px'}); ['#sec-overview','#sec-growth','#sec-reach','#sec-content','#sec-geo','#sec-timing','#sec-ga4','#sec-ads','#sec-market'].forEach(sl=>{ const el=$(sl); el&&io.observe(el); }); }
+if('IntersectionObserver' in window){ const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting) setCurrent(e.target.id==='sec-overview'?'#top':'#'+e.target.id); }); },{rootMargin:'-40% 0px -55% 0px'}); ['#sec-overview','#sec-growth','#sec-reach','#sec-content','#sec-geo','#sec-timing','#sec-ga4','#sec-ads','#sec-calendar','#sec-market'].forEach(sl=>{ const el=$(sl); el&&io.observe(el); }); }
 /* theme */
 const themeNow=()=>{ const a=document.documentElement.getAttribute('data-theme'); return a==='dark'||a==='light'?a:(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'); };
 function syncTheme(){ const t=themeNow(); $$('.themes button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.th===t)));
@@ -3064,7 +3082,7 @@ function openReport(mode){ const m=h('div',{class:'modal rb-modal',role:'dialog'
 async function saveFile(name,data,el){ let dl=null; try{ dl=window.claude?await window.claude.use('downloads'):null; }catch(e){} if(!dl){ try{ const blob=data instanceof Blob?data:new Blob([data],{type:name.endsWith('.csv')?'text/csv':'application/octet-stream'}); const u=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),4000); el.textContent='Saved '+name; toast('Saved '+name); }catch(e){ el.textContent='The file could not be saved.'; } return; } try{ await dl.save({filename:name,data}); el.textContent='Saved '+name; toast('Saved '+name); }catch(e){ el.textContent=e.code==='declined'?'Download cancelled.':e.code==='rate_limited'?'A save prompt is already open.':'The file could not be saved ('+(e.code||'error')+').'; } }
 
 /* ===== customize ===== */
-function openCustomize(){ const m=h('div',{class:'modal',role:'dialog','aria-modal':'true','aria-label':'Customize'}); const mods=[['plats','Channel cards'],['hero','Total audience and interactions'],['gl','Followers gained and lost'],['scale','Growth scale'],['km','Reach and key metrics'],['posts','Top content'],['rail','Best day to post and calendar'],['geo','Audience geography'],['time','Best time to post'],['bench','Competitors'],['ga4','Website traffic (GA4)'],['ads','Ad campaigns']];
+function openCustomize(){ const m=h('div',{class:'modal',role:'dialog','aria-modal':'true','aria-label':'Customize'}); const mods=[['plats','Channel cards'],['hero','Total audience and interactions'],['gl','Followers gained and lost'],['scale','Growth scale'],['km','Reach and key metrics'],['posts','Top content'],['rail','Best day to post and calendar'],['geo','Audience geography'],['time','Best time to post'],['bench','Competitors'],['cal','Content calendar'],['ga4','Website traffic (GA4)'],['ads','Ad campaigns']];
   m.innerHTML=`<div class="box" style="width:min(520px,100%)"><div class="m-head"><h2>Customize</h2><button class="x" id="cx" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div><div class="m-body">${mods.map(([id,l])=>`<div class="toggle-row"><label for="cm-${id}">${l}</label><input type="checkbox" class="sw-t" id="cm-${id}" data-mod="${id}" ${state.mods[id]?'checked':''}></div>`).join('')}<p class="note">Choices are saved in this browser only.</p></div></div>`;
   openShell(m); $('#cx',m).onclick=closeLayer; $$('[data-mod]',m).forEach(i=>i.onchange=()=>{ state.mods[i.dataset.mod]=i.checked; persist(); renderAll(); }); }
 
@@ -3131,7 +3149,7 @@ function answerLocal(raw){ const q=' '+raw.toLowerCase().replace(/[?!,]/g,' ')+'
   if(/\b(help|what can you|how do i use|options)\b/.test(q)) return {text:'I can answer from everything on this dashboard:\n• Full reports for 7, 14, 30 or 90 days, or per channel\n• Followers, views, interactions, clicks and posts for Instagram, Facebook, LinkedIn and YouTube\n• Top posts, reels and videos\n• What went out on a given day (for example "what did we post on Sep 14")\n• Where followers are, down to cities and countries\n• Competitors, best time to post and growth\nTry "monthly report" or "Instagram report for 14 days".'};
   if(k==='ga'){ if(GA4.source!=='live') return {text:"Google Analytics 4 isn't connected to the dashboard yet. The website section shows sample figures, so there are no real sessions or users to report.",go:{label:'Show website section',fn:()=>{ closeChat(); jump('#sec-ga4'); }}}; const P=ga4Period(n), c=P.cur; return {text:`Website, ${pl}: ${fmtInt(c.sessions)} sessions, ${fmtInt(c.users)} users, ${fmtPct(c.engagementRate,1)} engagement rate, ${nxMMSS(c.avgEngagementSeconds)} average engagement time and ${fmtInt(c.conversions)} conversions.`,go:{label:'Show website section',fn:()=>{ closeChat(); jump('#sec-ga4'); }}}; }
   if(/ad spend|budget|campaign|cost per|\bspend\b/.test(q)){ const go={label:'Show ad campaigns',fn:()=>{ closeChat(); jump('#sec-ads'); }}; if(ADS.source!=='live') return {text:"Ad accounts aren't connected to the dashboard yet. The ad campaigns section shows sample figures, so there's no real campaign spend to report. Boosted-post spend on organic posts is $0 for the last 90 days.",go}; const act=ADS.campaigns.filter(c=>c.status==='active'); return {text:`${act.length} active campaign${act.length===1?'':'s'}: $${Math.round(sum(act.map(c=>c.spend))).toLocaleString('en-CA')} spent, ${fmtInt(sum(act.map(c=>c.impressions)))} impressions, ${fmtInt(sum(act.map(c=>c.clicks)))} clicks and ${fmtInt(sum(act.map(c=>c.conversions)))} conversions.`,go}; }
-  const di=findDate(q); if(di!=null){ const ps=POSTS.filter(p=>p.idx===di); return {text: ps.length?`${dLong(dateAt(di))}: ${ps.length} post${ps.length>1?'s':''}\n`+ps.map(p=>`• ${CH[p.ch].name} ${p.type}: "${p.title}"${p.inter!=null?' · '+fmtInt(p.inter)+' interactions':''}${p.views?' · '+fmt(p.views)+' views':''}`).join('\n'):`Nothing was posted on ${dLong(dateAt(di))}.`, go: ps[0]?{label:'Open first post',fn:()=>{ closeChat(); openPost(ps[0]); }}:null, go2:{label:'Show calendar',fn:()=>{ state.calM=dateAt(di).getMonth(); state.calSel=dateAt(di).getDate(); renderCal(); jump('#calCard'); }}, where:'Calendar'}; }
+  const di=findDate(q); if(di!=null){ const ps=POSTS.filter(p=>p.idx===di); return {text: ps.length?`${dLong(dateAt(di))}: ${ps.length} post${ps.length>1?'s':''}\n`+ps.map(p=>`• ${CH[p.ch].name} ${p.type}: "${p.title}"${p.inter!=null?' · '+fmtInt(p.inter)+' interactions':''}${p.views?' · '+fmt(p.views)+' views':''}`).join('\n'):`Nothing was posted on ${dLong(dateAt(di))}.`, go: ps[0]?{label:'Open first post',fn:()=>{ closeChat(); openPost(ps[0]); }}:null, go2:{label:'Show calendar',fn:()=>{ closeChat(); calWeekStart=calStartOfWeek(dateAt(di)); calFilter='all'; openBigCalendar(); }}, where:'Calendar'}; }
   const city=IG_CITY_GEO.find(c=>q.includes(' '+c[0].toLowerCase())); if(city&&!/report/.test(q)) return {text:`${city[0]}, ${city[1]}: ${city[4].toFixed(2)}% of Instagram followers, about ${fmtInt(city[4]/100*CURRENT.ig)} people. It ranks #${IG_CITY_GEO.indexOf(city)+1} of ${IG_CITY_GEO.length} cities and makes up ${(city[4]/provShare[city[1]]*100).toFixed(0)}% of ${PROV[city[1]]}'s followers in the top cities.`, go:{label:'Show on map',fn:()=>{ state.geoView='ca'; renderGeo(); jump('#sec-geo'); setTimeout(()=>{ const tr=$(`#gtb tr[data-i="${IG_CITY_GEO.indexOf(city)}"]`); tr&&tr.click(); },700); }}, where:'Geography'};
   const ctyC=Object.entries(CNAME).find(([c,nm])=>c!=='CA'&&q.includes(' '+nm.toLowerCase())); if(ctyC){ const ig=COUNTRIES.ig.find(x=>x[0]===ctyC[0]), fb=COUNTRIES.fb.find(x=>x[0]===ctyC[0]); return {text:`${ctyC[1]}: ${ig?pct(ig[1])+' of Instagram followers (about '+fmtInt(ig[1]/100*CURRENT.ig)+')':'no Instagram followers reported'}, ${fb?pct(fb[1])+' of Facebook followers':'no Facebook followers reported'}.`, go:{label:'Show on world map',fn:()=>{ state.geoView='world'; renderGeo(); jump('#sec-geo'); }}, where:'Geography'}; }
   if(/report|summary|summarise|summarize|overview|how are we doing|how did we do|performance|recap|update/.test(q)){ if(k&&k!=='ga') return {text:chReport(k,n), go:rep, go2:{label:'Open '+CH[k].name,fn:()=>{ closeChat(); openChannel(k); }}, where:CH[k].name}; return {text:fullReport(n), go:rep, go2:{label:'Show dashboard',fn:()=>jump('#top')}, where:'Whole dashboard'}; }
@@ -3286,15 +3304,171 @@ async function nxLoad(){
   try{ const a=await adsLoad(); if(a) ADS=a; }catch(e){ ADS={source:'error',error:'TJ\'s server returned '+e.message}; }
   if(GA4.source!=='sample'&&state.mods.ga4) renderGA4(); if(ADS.source!=='sample'&&state.mods.ads) renderAds(); }
 
-function renderAll(){ const M=state.mods; vis('#plats',M.plats); vis('.row2',M.hero); vis('#glCard',M.gl); vis('#scaleCard',M.scale); vis('#sec-reach',M.km); vis('#sec-posts',M.posts); vis('#wkCard',M.rail); vis('#calCard',M.rail); vis('#sec-geo',M.geo); vis('#sec-market',M.bench); vis('#sec-time',M.time); vis('#sec-ga4',M.ga4); vis('#sec-ads',M.ads);
+function renderAll(){ const M=state.mods; vis('#plats',M.plats); vis('.row2',M.hero); vis('#glCard',M.gl); vis('#scaleCard',M.scale); vis('#sec-reach',M.km); vis('#sec-posts',M.posts); vis('#wkCard',M.rail); vis('#sec-geo',M.geo); vis('#sec-market',M.bench); vis('#sec-time',M.time); vis('#sec-ga4',M.ga4); vis('#sec-ads',M.ads); vis('#sec-calendar',M.cal);
   vis('#sec-growth',M.gl||M.scale); vis('#sec-content',M.posts||M.rail); vis('#sec-timing',M.time||M.rail); vis('#sec-overview',M.plats||M.hero);
   const full=(a,b,ca,cb)=>{ const ea=$(a), eb=$(b); if(ea) ea.style.gridColumn=cb?'':'1/-1'; if(eb) eb.style.gridColumn=ca?'':'1/-1'; };
-  full('#glCard','#scaleCard',M.gl,M.scale); full('#sec-posts','#wkCard',M.posts,M.rail); full('#sec-time','#calCard',M.time,M.rail);
+  full('#glCard','#scaleCard',M.gl,M.scale); full('#sec-posts','#wkCard',M.posts,M.rail);
   renderPeriod(); renderBell(); renderLede();
   if(M.plats) renderPlats(); else SOC.forEach(k=>{ const nv=$(`[data-nv="${k}"]`); if(nv) nv.textContent=fmtInt(agg(k).followers); });
-  if(M.hero) renderHero(); if(M.gl) renderGL(); if(M.scale) renderScale(); if(M.km) renderRow4(); if(M.posts) renderPosts(); if(M.rail){ renderWeek(); renderCal(); } if(M.geo) renderGeo(); if(M.bench) renderLandscape(); if(M.time) renderHeat(); if(M.ga4) renderGA4(); if(M.ads) renderAds();
+  if(M.hero) renderHero(); if(M.gl) renderGL(); if(M.scale) renderScale(); if(M.km) renderRow4(); if(M.posts) renderPosts(); if(M.rail){ renderWeek(); } if(M.geo) renderGeo(); if(M.bench) renderLandscape(); if(M.time) renderHeat(); if(M.ga4) renderGA4(); if(M.ads) renderAds(); if(M.cal) renderCalendar();
   if(chatEl){ const sp=$('.chat-h span',chatEl); if(sp) sp.innerHTML='<i></i>Cloverdale Paint · '+PL[state.period]; }
   if($('.drawer',layer)&&drawerCh&&!$('#pb',layer)&&!$('#px',layer)) renderDrawer(); }
+let calRows=null, calWeekStart=null, calFilter='all', calLoadPromise=null, calModalDepth=0;
+// re-read the calendar every 30 minutes so new Metricool posts appear without a reload; keep old rows if a read fails
+setInterval(async function(){ try{ if(!window.CP||!window.CP.sb) return; const r=await window.CP.sb.from('content_calendar').select('*').order('publication_date',{ascending:true}).limit(1000); if(!r.error&&Array.isArray(r.data)){ calRows=r.data; calLoadPromise=Promise.resolve(calRows); if(calWeekStart) paintAllCalendars(); } }catch(e){} },1800000);
+function calStartOfWeek(d){ const x=new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate()-x.getDay()); return x; }
+const CAL_ICO={
+  fb:'<svg viewBox="0 0 16 16" fill="currentColor"><path d="M10.6 5.6H9.2V4.4c0-.6.1-.9.9-.9h.9V1.2C10.6 1.1 9.9 1 9.1 1 7.1 1 6 2.2 6 4.1v1.5H4.4V8H6v7h3.1V8h1.9l.3-2.4z"/></svg>',
+  ig:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="1.5" width="13" height="13" rx="3.6"/><circle cx="8" cy="8" r="3"/><circle cx="12" cy="4" r="0.7" fill="currentColor" stroke="none"/></svg>',
+  left:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3L5 8l5 5"/></svg>',
+  right:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 3l5 5-5 5"/></svg>',
+  li:'<svg viewBox="0 0 16 16" fill="currentColor"><path d="M3.6 6H1.4v8.6h2.2V6zM2.5 1.4a1.3 1.3 0 100 2.6 1.3 1.3 0 000-2.6zM6.2 6v8.6h2.2V10c0-1.2.5-1.9 1.4-1.9.9 0 1.3.6 1.3 1.9v4.6h2.2V9.6C13.3 7.4 12.2 6 10.4 6 9.4 6 8.7 6.5 8.4 7V6H6.2z"/></svg>',
+  yt:'<svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M14.6 4.6c-.2-.7-.7-1.2-1.4-1.4C12 2.9 8 2.9 8 2.9s-4 0-5.2.3c-.7.2-1.2.7-1.4 1.4C1.1 5.8 1.1 8 1.1 8s0 2.2.3 3.4c.2.7.7 1.2 1.4 1.4 1.2.3 5.2.3 5.2.3s4 0 5.2-.3c.7-.2 1.2-.7 1.4-1.4.3-1.2.3-3.4.3-3.4s0-2.2-.3-3.4zM6.6 10.2V5.8L10.3 8l-3.7 2.2z"/></svg>',
+  gen:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="8" r="5.6"/><path d="M2.4 8h11.2M8 2.4c1.6 1.7 2.4 3.5 2.4 5.6S9.6 11.900 8 13.600C6.400 11.900 5.600 10.100 5.600 8S6.400 4.100 8 2.400z"/></svg>',
+  expand:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 2H2v4M10 14h4v-4M2 2l5 5M14 14l-5-5"/></svg>'
+};
+const CAL_STV={published:['Published','#178757','#DFF2E8'],scheduled:['Scheduled','#5d7ddc','#E7EBFB'],draft:['Draft','#9aa0a6','#EEF0F1']};
+const CAL_PLAT={facebook:['Facebook','#1877F2'],instagram:['Instagram','#9B37B8'],linkedin:['LinkedIn','#00897B'],youtube:['YouTube','#EE3322']};
+const CAL_ICK={facebook:'fb',instagram:'ig',linkedin:'li',youtube:'yt'};
+function calIcoKey(pl){ return CAL_ICK[String(pl||'').toLowerCase()]||'gen'; }
+
+function calPushOverflow(){ calModalDepth++; document.body.style.overflow='hidden'; }
+function calPopOverflow(){ calModalDepth=Math.max(0,calModalDepth-1); if(calModalDepth===0) document.body.style.overflow=''; }
+function calHost(id){ let host=document.getElementById(id); if(!host){ host=document.createElement('div'); host.id=id; document.body.appendChild(host); } return host; }
+
+async function ensureCalRows(){
+  if(calRows!==null) return calRows;
+  if(!calLoadPromise){
+    calLoadPromise=(async()=>{
+      try{
+        const r=await window.CP.sb.from('content_calendar').select('*').order('publication_date',{ascending:true}).limit(1000);
+        if(r.error) throw r.error;
+        calRows=r.data||[];
+      }catch(e){ calRows=[]; }
+      return calRows;
+    })();
+  }
+  return calLoadPromise;
+}
+
+async function renderCalendar(root){
+  root = root || $('#calListRoot'); if(!root) return;
+  if(!window.CP||!window.CP.sb){ root.innerHTML='<p class="muted">Sign in to see the content calendar.</p>'; return; }
+  if(calRows===null){ root.innerHTML='<p class="muted">Loading…</p>'; }
+  await ensureCalRows();
+  if(!calWeekStart) calWeekStart=calStartOfWeek(new Date());
+  paintCalendar(root);
+}
+
+function calCardHtml(p){
+  const d=new Date(p.publication_date);
+  const timeStr=isNaN(d)?'—':d.toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit'});
+  const st=CAL_STV[p.status]||CAL_STV.scheduled;
+  const plat=CAL_PLAT[p.platform]||[(p.platform||'').toUpperCase(),'#7E838A'];
+  const icoKey=calIcoKey(p.platform);
+  const img=(Array.isArray(p.media)&&p.media[0])?p.media[0]:null;
+  const thumb=img?`<img src="${esc(img)}" alt="" loading="lazy">`:`<div class="cal-ph">${CAL_ICO[icoKey]}</div>`;
+  return `<div class="cal-card" data-id="${esc(p.external_id)}">
+    <div class="cal-thumb">${thumb}<span class="cal-badge" style="--c:${plat[1]}">${CAL_ICO[icoKey]}</span></div>
+    <div class="cal-meta"><span class="cal-time">${timeStr}</span><span class="cal-tag" style="background:${st[2]};color:${st[1]}">${st[0]}</span></div>
+  </div>`;
+}
+
+function paintAllCalendars(){
+  [$('#calListRoot'), document.getElementById('calBigRoot')].forEach(r=>{ if(r) paintCalendar(r); });
+}
+
+function paintCalendar(root){
+  const rows=(calRows||[]).filter(p=>calFilter==='all'||p.platform===calFilter);
+  const days=[]; for(let i=0;i<7;i++){ const d=new Date(calWeekStart); d.setDate(d.getDate()+i); days.push(d); }
+  const byDay=new Map(); days.forEach(d=>byDay.set(d.toDateString(),[]));
+  rows.forEach(p=>{
+    const d=new Date(p.publication_date); if(isNaN(d)) return;
+    const key=new Date(d.getFullYear(),d.getMonth(),d.getDate()).toDateString();
+    if(byDay.has(key)) byDay.get(key).push(p);
+  });
+  byDay.forEach(list=>list.sort((a,b)=>new Date(a.publication_date)-new Date(b.publication_date)));
+  const today=new Date().toDateString();
+  const rangeLabel=`${days[0].toLocaleDateString('en-CA',{month:'short',day:'numeric'})} – ${days[6].toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'})}`;
+  const pillsHtml=['all','facebook','instagram','linkedin','youtube'].map(k=>{
+    const label=k==='all'?'All':CAL_PLAT[k][0];
+    return `<button class="cal-pill${calFilter===k?' on':''}" data-f="${k}">${label}</button>`;
+  }).join('');
+  const dayCols=days.map(d=>{
+    const key=d.toDateString(); const list=byDay.get(key)||[];
+    const cards=list.length?list.map(calCardHtml).join(''):'<div class="cal-none">No posts</div>';
+    return `<div class="cal-day${key===today?' is-today':''}">
+      <div class="cal-day-h"><span>${d.toLocaleDateString('en-CA',{weekday:'short'})}</span><b>${d.getDate()}</b></div>
+      <div class="cal-cards">${cards}</div>
+    </div>`;
+  }).join('');
+  const expandBtn = root.id==='calListRoot' ? `<button class="iconb" id="calExpandBtn" aria-label="Open full calendar" title="Open full calendar">${CAL_ICO.expand}</button>` : '';
+  root.innerHTML=`<div class="cal-wrap">
+    <div class="cal-head">
+      <div class="cal-pills">${pillsHtml}</div>
+      <div class="cal-nav"><button class="iconb" data-cal-prev aria-label="Previous week">${CAL_ICO.left}</button><span class="cal-range">${rangeLabel}</span><button class="iconb" data-cal-next aria-label="Next week">${CAL_ICO.right}</button><button class="btn sm" data-cal-today>Today</button>${expandBtn}</div>
+    </div>
+    <div class="cal-grid">${dayCols}</div>
+  </div>`;
+  $$('.cal-pill',root).forEach(b=>b.onclick=()=>{ calFilter=b.dataset.f; paintAllCalendars(); });
+  $('[data-cal-prev]',root).onclick=()=>{ calWeekStart.setDate(calWeekStart.getDate()-7); paintAllCalendars(); };
+  $('[data-cal-next]',root).onclick=()=>{ calWeekStart.setDate(calWeekStart.getDate()+7); paintAllCalendars(); };
+  $('[data-cal-today]',root).onclick=()=>{ calWeekStart=calStartOfWeek(new Date()); paintAllCalendars(); };
+  $$('.cal-card',root).forEach(c=>c.onclick=()=>openCalModal(c.dataset.id));
+  const expandEl=$('#calExpandBtn',root); if(expandEl) expandEl.onclick=()=>openBigCalendar();
+}
+
+function openCalModal(id){
+  const p=(calRows||[]).find(x=>x.external_id===id); if(!p) return;
+  const d=new Date(p.publication_date);
+  const dateStr=isNaN(d)?'—':d.toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'});
+  const timeStr=isNaN(d)?'—':d.toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit'});
+  const st=CAL_STV[p.status]||CAL_STV.scheduled;
+  const plat=CAL_PLAT[p.platform]||[(p.platform||'').toUpperCase(),'#7E838A'];
+  const img=(Array.isArray(p.media)&&p.media[0])?p.media[0]:null;
+  const link=(p.public_url&&/^https?:\/\//i.test(p.public_url))?`<a class="btn sm" href="${esc(p.public_url)}" target="_blank" rel="noopener">View post ${ICO.ext}</a>`:'';
+  const node=h('div',{class:'cal-modal',role:'dialog','aria-modal':'true'},
+    (img?`<img src="${esc(img)}" alt="">`:'')+
+    `<button class="x" id="calModalX" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+    <div class="cal-modal-body">
+      <div class="cal-modal-top"><span class="nx-plat">${esc(plat[0])}</span><span class="cal-tag" style="background:${st[2]};color:${st[1]}">${st[0]}</span></div>
+      <div class="cal-modal-cap">${esc(p.caption||'(no caption)')}</div>
+      <div class="muted" style="font-size:12.5px">${dateStr} · ${timeStr}</div>
+      ${link}
+    </div>`
+  );
+  const host=calHost('calPostHost');
+  const sc=h('div',{class:'cal-post-scrim'}); sc.onclick=closeCalModal;
+  host.innerHTML=''; host.append(sc,node);
+  calPushOverflow();
+  node.querySelector('#calModalX').onclick=closeCalModal;
+  document.addEventListener('keydown', calModalEsc);
+}
+function closeCalModal(){
+  const host=document.getElementById('calPostHost');
+  if(host && host.innerHTML){ host.innerHTML=''; calPopOverflow(); }
+  document.removeEventListener('keydown', calModalEsc);
+}
+function calModalEsc(e){ if(e.key==='Escape') closeCalModal(); }
+
+function openBigCalendar(){
+  const host=calHost('calBigHost');
+  const sc=h('div',{class:'scrim'}); sc.onclick=closeBigCalendar;
+  const panel=h('div',{class:'cal-big',role:'dialog','aria-modal':'true','aria-label':'Content calendar'});
+  panel.innerHTML=`<div class="cal-big-head"><h2>Content calendar</h2><button class="iconb" id="calBigX" aria-label="Close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4l8 8M12 4l-8 8"/></svg></button></div><div class="cal-big-body" id="calBigRoot"></div>`;
+  host.innerHTML=''; host.append(sc,panel);
+  calPushOverflow();
+  panel.querySelector('#calBigX').onclick=closeBigCalendar;
+  document.addEventListener('keydown', calBigEsc);
+  renderCalendar(document.getElementById('calBigRoot'));
+}
+function closeBigCalendar(){
+  const host=document.getElementById('calBigHost');
+  if(host && host.innerHTML){ host.innerHTML=''; calPopOverflow(); }
+  document.removeEventListener('keydown', calBigEsc);
+}
+function calBigEsc(e){ if(e.key==='Escape') closeBigCalendar(); }
+
 $('#footSrc').textContent=`Source: TJ's server, synced ${dLong(CP_SYNCED())}. Data covers ${dShort(START)} to ${dShort(END)}, 2026; ${dShort(END)} may be a partial day. Instagram follower counts are exact from Sep 13, and earlier days are rebuilt from daily gains and losses. Competitor numbers are public page data, updated daily. Platform logos belong to their owners.`;
 let rt, lw=innerWidth; addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ if(Math.abs(innerWidth-lw)<40) return; lw=innerWidth; if(state.mods.gl) renderGL(); if(state.mods.ga4) renderGA4(); if(state.mods.geo) drawMap(state.geoView,state.geoNet,[]); $$('.seg').forEach(segPill); $$('.tabs').forEach(tabInk); },180); });
 if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ $$('.seg').forEach(segPill); $$('.tabs').forEach(tabInk); });
