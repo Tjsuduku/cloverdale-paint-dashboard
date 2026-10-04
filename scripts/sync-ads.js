@@ -79,7 +79,10 @@ async function fetchPlatformCampaigns(platform, from, to, today) {
   let json; try { json = JSON.parse(r.body); } catch { console.log(`${platform}: non-JSON response, skipping`); return []; }
   const list = Array.isArray(json) ? json : pick(json, 'data', 'campaigns', 'results') || [];
   if (!Array.isArray(list)) { console.log(`${platform}: no array of campaigns found in response`); return []; }
-  if (list.length) console.log(`${platform}: first raw campaign object: ${JSON.stringify(list[0]).slice(0, 500)}`);
+    if (list.length) {
+          console.log(`${platform}: first raw campaign object: ${JSON.stringify(list[0]).slice(0, 500)}`);
+          console.log(`${platform}: FULL metrics object for first campaign: ${JSON.stringify(list[0].metrics)}`);
+    }
   return list;
 }
 
