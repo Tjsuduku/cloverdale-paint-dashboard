@@ -2,18 +2,21 @@
 // Supabase ad_campaigns (campaign_id, platform, name, status, spend, impressions, clicks,
 // conversions, start_date, end_date). Mirrors scripts/sync-analytics.js's structure and
 // failure-handling rules: never upsert on a response that doesn't look like real campaign
-// data, log the raw shape so a wrong guess is visible in the Action log (not a silent zero-row
-// "success" -- see MISTAKES-AND-FIXES.md #2).
+// data, log the raw shape so a wrong guess is visible in the Action log, not a silent zero-row
+// "success" (see MISTAKES-AND-FIXES.md #2).
 //
-// IMPORTANT / open item for whoever runs this first (see the hand-off notes):
-// Metricool's advertising endpoint is not in the same official v2 docs as the other syncs
-// (/api/v2/analytics/timelines). The endpoint below (GET /facebookads/campaigns on
-// api.metricool.com/v1, auth via X-Auth-Token + X-Auth-UserId) is confirmed only against a
-// third-party, independently-published API client -- not Metricool's own documentation -- so
-// it has NOT been proven against this account yet. This workflow is wired as workflow_dispatch
-// ONLY (no cron) for exactly that reason: run it once by hand, read the Action log, and if the
-// request/response shape needs adjusting the log will show the raw body to fix it against,
-// the same way sync-analytics.js's endpoint and metric names were debugged.
+// Endpoint confirmed against Metricool's own published OpenAPI spec (downloaded from
+// app.metricool.com/resources/apidocs -> Swagger.json, 2026-10-04), not guessed:
+//   GET https://app.metricool.com/api/v2/advertising/campaigns
+//   query: blogId, userId, from, to, timezone, providers[]=facebookads
+//   header: X-Mc-Auth: <userToken>
+// Response: { data: [ { network, providerCampaignId, name, status (ACTIVE|PAUSED|REMOVED),
+//   objective, start:{dateTime}, stop:{dateTime}, dailyBudget, lifetimeBudget, currency,
+//   metrics: {...free-form...} } ] }
+// The "metrics" object's exact key names for spend/impressions/clicks/conversions are not
+// specified in the spec (documented only as a free-form object), so this script tries a
+// short list of likely names and logs the first raw metrics object so an unlisted name shows
+// up immediately in the Action log.
 //
 // Env: METRICOOL_API_TOKEN, METRICOOL_USER_ID, METRICOOL_BRAND_ID, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 const need = ['METRICOOL_API_TOKEN', 'METRICOOL_USER_ID', 'METRICOOL_BRAND_ID', 'SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'];
@@ -21,10 +24,12 @@ const missing = need.filter((k) => !process.env[k]);
 if (missing.length) { console.error('Missing env vars: ' + missing.join(', ')); process.exit(1); }
 const E = process.env;
 const DAYS_BACK = 120; // match sync-analytics.js's window
+const TZ = 'America/Vancouver';
 
 const pad = (n) => String(n).padStart(2, '0');
 const iso = (d) => `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
-const H = { 'X-Auth-Token': E.METRICOOL_API_TOKEN, 'X-Auth-UserId': E.METRICOOL_USER_ID, Accept: 'application/json' };
+const isoDateTime = (d) => `${iso(d)}T${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`;
+const H = { 'X-Mc-Auth': E.METRICOOL_API_TOKEN, Accept: 'application/json' };
 
 async function get(url) {
   const res = await fetch(url, { headers: H });
@@ -32,52 +37,49 @@ async function get(url) {
   return { ok: res.ok, status: res.status, body };
 }
 
-// Metricool's campaign objects have been seen under a few different key names depending on
-// the surface (direct REST vs MCP connector). Pick the first present key so a reasonable
-// shape change doesn't silently break the sync.
-const pick = (o, ...keys) => { for (const k of keys) if (o[k] != null && o[k] !== '') return o[k]; return null; };
+const pick = (o, ...keys) => { for (const k of keys) if (o && o[k] != null && o[k] !== '') return o[k]; return null; };
 const num = (v) => { const n = parseFloat(v); return isFinite(n) ? n : 0; };
+const dt = (d) => { const v = d && d.dateTime; return v ? String(v).slice(0, 10) : null; };
 
-function deriveStatus(startISO, endISO, today) {
-  // Metricool's campaigns connector does not expose an active/paused/ended field (confirmed by
-  // scanning all 317 available metaads metrics -- zero "status" matches). Approximate from dates:
-  // "paused" cannot be detected this way and is never produced here.
-  if (endISO && endISO < today) return 'ended';
-  if (startISO && startISO > today) return 'scheduled';
-  return 'active';
+function mapStatus(apiStatus, startISO, today) {
+  const s = String(apiStatus || '').toUpperCase();
+  if (s === 'REMOVED') return 'ended';
+  if (s === 'PAUSED') return 'paused';
+  if (s === 'ACTIVE') return startISO && startISO > today ? 'scheduled' : 'active';
+  return 'paused'; // matches renderAds()'s own fallback (ADS_STATUS[c.status]||ADS_STATUS.paused)
 }
 
-function normalizeCampaign(raw, platform, today) {
-  const id = pick(raw, 'id', 'campaign_id', 'campaignId');
-  const name = pick(raw, 'name', 'campaign_name', 'campaignName');
-  if (!id || !name) return null; // doesn't look like a campaign object -- skip, don't guess
-  const start = (pick(raw, 'start_time', 'start_date', 'startDate', 'init_date') || '').slice(0, 10) || null;
-  const end = (pick(raw, 'stop_time', 'end_date', 'endDate', 'finish_date') || '').slice(0, 10) || null;
+function normalizeCampaign(c, platform, today) {
+  const id = pick(c, 'providerCampaignId', 'id');
+  if (!id || !c.name) return null; // doesn't look like a campaign object -- skip, don't guess
+  const start = dt(c.start);
+  const m = c.metrics || {};
   return {
     campaign_id: String(id),
     platform,
-    name: String(name),
-    status: deriveStatus(start, end, today),
-    spend: num(pick(raw, 'spend', 'spent', 'cost')),
-    impressions: num(pick(raw, 'impressions')),
-    clicks: num(pick(raw, 'clicks', 'inline_link_clicks')),
-    conversions: num(pick(raw, 'conversions', 'results') || 0),
+    name: String(c.name),
+    status: mapStatus(c.status, start, today),
+    spend: num(pick(m, 'spend', 'spent', 'cost')),
+    impressions: num(pick(m, 'impressions')),
+    clicks: num(pick(m, 'clicks', 'linkClicks', 'inline_link_clicks')),
+    conversions: num(pick(m, 'conversions', 'results', 'purchases')),
     start_date: start,
-    end_date: end,
+    end_date: dt(c.stop),
     synced_at: new Date().toISOString(),
   };
 }
 
-async function fetchPlatformCampaigns(platform, path, from, to) {
-  const base = 'https://api.metricool.com/v1';
-  const q = new URLSearchParams({ blog_id: E.METRICOOL_BRAND_ID, init_date: iso(from), end_date: iso(to) });
-  const r = await get(`${base}${path}?${q}`);
-  console.log(`${platform}: HTTP ${r.status}, body starts: ${r.body.slice(0, 300)}`);
+async function fetchPlatformCampaigns(platform, from, to, today) {
+  const base = 'https://app.metricool.com/api/v2/advertising/campaigns';
+  const q = new URLSearchParams({ blogId: E.METRICOOL_BRAND_ID, userId: E.METRICOOL_USER_ID, from: isoDateTime(from), to: isoDateTime(to), timezone: TZ });
+  q.append('providers[]', platform);
+  const r = await get(`${base}?${q}`);
+  console.log(`${platform}: HTTP ${r.status}, body starts: ${r.body.slice(0, 400)}`);
   if (!r.ok) return [];
   let json; try { json = JSON.parse(r.body); } catch { console.log(`${platform}: non-JSON response, skipping`); return []; }
-  // Response shape isn't confirmed yet -- try the common container keys, else treat a bare array as the list.
-  const list = Array.isArray(json) ? json : pick(json, 'campaigns', 'data', 'results') || [];
+  const list = Array.isArray(json) ? json : pick(json, 'data', 'campaigns', 'results') || [];
   if (!Array.isArray(list)) { console.log(`${platform}: no array of campaigns found in response`); return []; }
+  if (list.length) console.log(`${platform}: first raw campaign object: ${JSON.stringify(list[0]).slice(0, 500)}`);
   return list;
 }
 
@@ -96,16 +98,16 @@ async function upsert(rows) {
   const today = iso(now);
   const rows = [];
 
-  const metaRaw = await fetchPlatformCampaigns('meta', '/facebookads/campaigns', from, now);
-  for (const r of metaRaw) { const c = normalizeCampaign(r, 'meta', today); if (c) rows.push(c); }
-  console.log(`meta: ${metaRaw.length} raw records, ${rows.length} normalized so far`);
+  const metaRaw = await fetchPlatformCampaigns('facebookads', from, now, today);
+  for (const c of metaRaw) { const row = normalizeCampaign(c, 'meta', today); if (row) rows.push(row); }
+  console.log(`meta: ${metaRaw.length} raw records, ${rows.length} normalized`);
 
-  // Google Ads isn't connected for this brand yet (see getBrandSettings) -- left out until it is;
-  // adding it later is the same fetchPlatformCampaigns('google', '/googleads/campaigns', ...) call.
+  // Google Ads isn't connected for this brand yet (see getBrandSettings) -- adding it later is
+  // one more fetchPlatformCampaigns('googleads', ...) call with platform:'google' on the row.
 
   if (!rows.length) {
-    console.log('No campaigns normalized -- nothing to upsert. This is treated as "nothing live yet", not an error; check the HTTP status/body logged above if campaigns were expected.');
-    process.exit(0); // exit 0: don't flag a red X for "not connected yet", only for a hard failure below
+    console.log('No campaigns normalized -- nothing to upsert. Check the HTTP status/body logged above if campaigns were expected; this is treated as "nothing live yet", not a hard failure.');
+    process.exit(0);
   }
 
   console.log(`Upserting ${rows.length} campaign rows`);
