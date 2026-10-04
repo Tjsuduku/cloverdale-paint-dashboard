@@ -5,8 +5,8 @@ on:
   # No schedule yet, on purpose: the exact Metricool ads endpoint is unverified against this
   # account (see the comment at the top of scripts/sync-ads.js). Run manually once, check the
   # Action log and the ad_campaigns table, then add:
-  #   schedule:
-  #     - cron: '0 */6 * * *'
+    schedule:
+   - cron: '0 */6 * * *'
   # once a clean run is confirmed -- same precaution used when sync-analytics.yml first shipped.
 
 jobs:
