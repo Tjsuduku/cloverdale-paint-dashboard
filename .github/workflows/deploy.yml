@@ -42,7 +42,7 @@ jobs:
 
       - name: Verify required IDs
         run: |
-          REQUIRED_IDS=("gate" "gu" "gp" "gform" "sec-account" "sec-posts" "sec-comp" "sec-geo" "sidebar")
+          REQUIRED_IDS=("gate" "gu" "gp" "gform" "sec-posts" "sec-market" "sec-geo" "navSec")
           MISSING=0
           for id in "${REQUIRED_IDS[@]}"; do
             if ! grep -q "id=['\"]$id['\"]" index.html && ! grep -q "id=$id" index.html; then
