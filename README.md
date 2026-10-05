@@ -2,7 +2,7 @@
 
 Interactive social media dashboard for Cloverdale Paint covering Instagram, Facebook, LinkedIn and YouTube.
 
-Live: https://tjsuduku.github.io/cloverdale-paint-dashboard/
+Live: https://reframes-bd.github.io/cloverdale-paint-dashboard/
 
 - Growth scale, top content and a deep dive for each platform
 - **Competitive landscape** comparing Cloverdale with Benjamin Moore, Sherwin-Williams, Behr and Dulux, shown two ways:
