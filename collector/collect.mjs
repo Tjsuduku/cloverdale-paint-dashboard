@@ -195,16 +195,24 @@ async function facebook() {
   else if (Array.isArray(raw?.data)) { recs = raw.data; head = Object.keys(recs[0] || {}); }
   else if (Array.isArray(raw)) { recs = raw; head = Object.keys(recs[0] || {}); }
   for (const o of recs) {
-    let id = String(pick(o, [/^post ?id$/i, /postid/i, /^id$/i]) || '');
-    const link = String(pick(o, [/link|url|permalink/i]) || '');
-    if (!/_/.test(id)) { const m = /facebook\.com\/(\d+)\/posts\/(\d+)/.exec(link); if (m) id = `${m[1]}_${m[2]}`; }
+    // Extract post ID from PostLink (Metricool API: https://facebook.com/PAGEID/posts/POSTID)
+    // or from PageId + fallback to regex extraction
+    let id = String(o.PageId || pick(o, [/^post ?id$/i, /postid/i, /^id$/i]) || '');
+    const link = String(o.PostLink || pick(o, [/link|url|permalink/i]) || '');
+    // If we have PageId but not full post ID format, extract from link
+    if (!/_/.test(id) && link) {
+      const m = /facebook\.com\/(\d+)\/posts\/(\d+)/.exec(link);
+      if (m) id = `${m[1]}_${m[2]}`;
+    }
     const page = id.split('_')[0];
     const b = byPage[page];
-    const t = fbStamp(pick(o, [/published with time/i, /published/i, /date|time|created|timestamp/i]));
+    // Handle Metricool Date column format (try Metricool column names first, then regex fallback)
+    const dateVal = o.Date || pick(o, [/published with time/i, /published/i, /date|time|created|timestamp/i]);
+    const t = fbStamp(dateVal);
     if (!b || !t) continue;
-    res.posts.push({ b: b.id, c: 'facebook', id, t, k: 'post', x: clip(pick(o, [/^text$/i, /message|content|caption|description/i])),
+    res.posts.push({ b: b.id, c: 'facebook', id, t, k: 'post', x: clip(o.Content || pick(o, [/^text$/i, /message|content|caption|description/i])),
       u: `https://www.facebook.com/${page}/posts/${id.split('_')[1]}`,
-      e: { likes: num(pick(o, [/reaction/i, /^likes?$/i])), comments: num(pick(o, [/comment/i])), shares: num(pick(o, [/share/i])) } });
+      e: { likes: num(o.Reactions || pick(o, [/reaction/i, /^likes?$/i])), comments: num(o.Comments || pick(o, [/comment/i])), shares: num(o.Shared || pick(o, [/share/i])) } });
   }
   if (recs.length && !res.posts.length) throw new Error('Could not read the posts file. Columns seen: ' + head.join(', '));
   const per = {}; res.posts.forEach(p => per[p.b] = (per[p.b] || 0) + 1);
@@ -280,7 +288,7 @@ function merge(db, ch, res) {
 const jobs = { facebook, instagram, youtube };
 
 if (ARGS.has('--check')) {
-  log(`Today ${TODAY} (${TZ}), weekday ${WEEKDAY}`);
+  log(`Today ${TODAY} (${TZ})`);
   log(`Instagram: ${env.IG_USER_ID && env.IG_ACCESS_TOKEN ? 'ready' : 'missing IG_USER_ID / IG_ACCESS_TOKEN'}`);
   log(`YouTube:   ${env.YT_API_KEY ? 'ready' : 'missing YT_API_KEY'}`);
   log(`Facebook:  ${env.FB_LANDSCAPE_API && env.FB_LANDSCAPE_TOKEN && env.FB_LANDSCAPE_USER && env.FB_LANDSCAPE_BRAND ? 'ready' : 'keys not added (keeps saved data)'}`);
